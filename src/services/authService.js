@@ -32,8 +32,9 @@ export const signOut = async () => {
 };
 
 // Get the current authenticated user
-export const getUser = () => {
-    return supabase.auth.user();
+export const getUser = async () => {
+    const { data } = await supabase.auth.getUser();
+    return data.user;
 };
 
 // Listen for authentication state changes

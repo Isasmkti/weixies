@@ -54,7 +54,7 @@
         </h1>
 
         <p
-          class="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-white/85 leading-relaxed"
+          class="mt-6 max-w-2xl mx-auto text-lg font-regular md:text-xl text-white/85 leading-relaxed"
         >
           {{ currentItem.description }}
         </p>

@@ -6,7 +6,8 @@ export async function rAll() {
       hero: {
         title: 'Welcome to Weixies Webshop',
         description: 'We are ready to make simple and fast web application for you!',
-        image: heroImg
+        // image: 
+        image: 'https://i.pinimg.com/1200x/91/90/2f/91902fdb1371e8cbcd3a49c2a99a1f33.jpg'
       },
       about: {
         title: 'About Us',
@@ -91,7 +92,7 @@ export async function rAll() {
         },
       ],
       cta: {
-        title: 'Ready to build your project?',
+        title: 'Ready to order your project?',
         subtitle: 'Start ordering your project today.',
         btnPrimary: 'Get started',
         btnSecondary: 'Learn more'
