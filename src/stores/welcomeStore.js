@@ -16,7 +16,7 @@ export const useWelcomeStore = defineStore('welcome', {
     async stAll() {
       try {
         this.loading = true
-        const data = await welcomeService.sAll()
+        const data = await welcomeService.sAll() 
         this.hero = data.hero
         this.about = data.about
         this.features = data.features

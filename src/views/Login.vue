@@ -38,7 +38,7 @@ const handleLogin = async () => {
             class="relative z-10 w-full max-w-md bg-surface p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-bg-alt/50">
             <div class="text-center mb-8">
                 <h1 class="text-3xl font-bold text-text-main mb-2">Welcome Back</h1>
-                <p class="text-text-muted">Sign in to access your dashboard</p>
+                <p class="text-text-muted">Login to access your dashboard</p>
             </div>
 
             <form @submit.prevent="handleLogin" class="space-y-6">
@@ -70,8 +70,8 @@ const handleLogin = async () => {
 
                 <button :disabled="isLoading"
                     class="w-full py-3.5 rounded-xl bg-primary hover:bg-primary-dark text-white font-semibold shadow-lg shadow-primary/30 hover:shadow-primary-dark/30 hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none flex justify-center items-center gap-2">
-                    <span v-if="isLoading">Signing in...</span>
-                    <span v-else>Sign In</span>
+                    <span v-if="isLoading">Logging in...</span>
+                    <span v-else>Login</span>
                     <svg v-if="!isLoading" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
                         viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

@@ -40,7 +40,7 @@
         <div class="absolute inset-0 bg-primary/10"></div>
 
         <!-- Bottom fade -->
-        <div class="absolute bottom-0 inset-x-0 h-96 bg-gradient-to-t from-bg-alt to-transparent"></div>
+        <div class="absolute bottom-0 inset-x-0 h-72 bg-gradient-to-t from-bg-alt to-transparent"></div>
       </div>
      </MotionGroup>
 
