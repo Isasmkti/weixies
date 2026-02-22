@@ -30,57 +30,60 @@
           </div>
         </div>
 
-<!-- Menus Grid -->
-<div class="mt-12 grid grid-cols-2 gap-8 xl:mt-0 xl:col-span-2">
-  <div class="md:grid md:grid-cols-2 md:gap-8">
-    <!-- Products -->
-    <div>
-      <h3 class="text-sm font-bold text-text-main tracking-wider uppercase">Products</h3>
-      <ul role="list" class="mt-4 space-y-2">
-        <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Website Templates</a></li>
-        <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Landing Pages</a></li>
-        <li><a href="#" class="text-base text-text-muted hover:text-primary transition">UI Kits</a></li>
-        <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Admin Dashboards</a></li>
-      </ul>
-    </div>
+        <!-- Menus Grid -->
+        <div class="mt-12 grid grid-cols-2 gap-8 xl:mt-0 xl:col-span-2">
+          <div class="md:grid md:grid-cols-2 md:gap-8">
+            <!-- Products -->
+            <div>
+              <h3 class="text-sm font-bold text-text-main tracking-wider uppercase">Products</h3>
+              <ul role="list" class="mt-4 space-y-2">
+                <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Website Templates</a>
+                </li>
+                <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Landing Pages</a></li>
+                <li><a href="#" class="text-base text-text-muted hover:text-primary transition">UI Kits</a></li>
+                <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Admin Dashboards</a>
+                </li>
+              </ul>
+            </div>
 
-    <!-- Support -->
-    <div class="mt-12 md:mt-0">
-      <h3 class="text-sm font-bold text-text-main tracking-wider uppercase">Help & Support</h3>
-      <ul role="list" class="mt-4 space-y-2">
-        <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Pricing</a></li>
-        <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Documentation</a></li>
-        <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Tutorials</a></li>
-        <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Contact Support</a></li>
-      </ul>
-    </div>
-  </div>
+            <!-- Support -->
+            <div class="mt-12 md:mt-0">
+              <h3 class="text-sm font-bold text-text-main tracking-wider uppercase">Help & Support</h3>
+              <ul role="list" class="mt-4 space-y-2">
+                <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Pricing</a></li>
+                <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Documentation</a></li>
+                <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Tutorials</a></li>
+                <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Contact Support</a></li>
+              </ul>
+            </div>
+          </div>
 
-  <div class="md:grid md:grid-cols-2 md:gap-8">
+          <div class="md:grid md:grid-cols-2 md:gap-8">
 
-    <!-- Company -->
-    <div>
-      <h3 class="text-sm font-bold text-text-main tracking-wider uppercase">Company</h3>
-      <ul role="list" class="mt-4 space-y-2">
-        <li><a href="#" class="text-base text-text-muted hover:text-primary transition">About Us</a></li>
-        <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Blog</a></li>
-        <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Careers</a></li>
-        <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Affiliates</a></li>
-      </ul>
-    </div>
+            <!-- Company -->
+            <div>
+              <h3 class="text-sm font-bold text-text-main tracking-wider uppercase">Company</h3>
+              <ul role="list" class="mt-4 space-y-2">
+                <li><a href="#" class="text-base text-text-muted hover:text-primary transition">About Us</a></li>
+                <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Blog</a></li>
+                <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Careers</a></li>
+                <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Affiliates</a></li>
+              </ul>
+            </div>
 
-    <!-- Legal -->
-    <div class="mt-12 md:mt-0">
-      <h3 class="text-sm font-bold text-text-main tracking-wider uppercase">Legal</h3>
-      <ul role="list" class="mt-4 space-y-2">
-        <li><a href="#" class="text-base text-text-muted hover:text-primary transition">License</a></li>
-        <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Refund Policy</a></li>
-        <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Privacy Policy</a></li>
-        <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Terms & Conditions</a></li>
-      </ul>
-    </div>
-  </div>
-</div>
+            <!-- Legal -->
+            <div class="mt-12 md:mt-0">
+              <h3 class="text-sm font-bold text-text-main tracking-wider uppercase">Legal</h3>
+              <ul role="list" class="mt-4 space-y-2">
+                <li><a href="#" class="text-base text-text-muted hover:text-primary transition">License</a></li>
+                <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Refund Policy</a></li>
+                <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Privacy Policy</a></li>
+                <li><a href="#" class="text-base text-text-muted hover:text-primary transition">Terms & Conditions</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
 
       </div>
 

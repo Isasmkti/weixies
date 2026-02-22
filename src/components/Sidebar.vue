@@ -97,7 +97,7 @@ const handleLogout = async () => {
         <div class="p-4 border-t border-bg-alt/50 flex flex-col gap-2 relative">
             <!-- User Profile Section -->
             <div v-if="profile"
-                :class="['bg-bg p-3 rounded-xl flex items-center gap-3 border border-bg-alt/50 transition-all duration-300', isCollapsed ? 'justify-center p-2' : '']">
+                :class="[' p-3 rounded-xl flex items-center gap-3  transition-all duration-300', isCollapsed ? 'justify-center p-2' : 'bg-bg border border-bg-alt/50']">
                 <!-- Profile Image -->
                 <div class="relative shrink-0">
                     <div
