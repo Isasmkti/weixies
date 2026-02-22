@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuth } from '../composables/useAuth'
+import { useAuth } from '../../composables/useAuth'
 
 const router = useRouter()
 const { profile, fetchProfile, signOut } = useAuth()
@@ -25,19 +25,18 @@ const handleLogout = async () => {
         <div class="p-6 flex items-center gap-4">
             <div
                 class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/30 shrink-0">
-                W
+                A
             </div>
             <transition name="fade">
                 <span v-if="!isCollapsed"
-                    class="font-poppins font-bold text-2xl text-text-main tracking-tight">Weixies</span>
+                    class="font-poppins font-bold text-2xl text-text-main tracking-tight">Admin</span>
             </transition>
         </div>
 
-
-
         <!-- Navigation -->
         <nav class="flex-1 px-4 space-y-2 overflow-y-auto container no-scrollbar">
-            <router-link to="/dashboard"
+            <!-- Dashboard -->
+            <router-link to="/admin"
                 class="flex items-center gap-3 px-4 py-3 rounded-xl text-text-muted hover:bg-bg hover:text-primary transition-all duration-200 group"
                 active-class="bg-primary/10 text-primary font-medium shadow-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24"
@@ -50,47 +49,32 @@ const handleLogout = async () => {
                 </transition>
             </router-link>
 
-            <!-- Catalog -->
-            <router-link to="/products"
+            <!-- Products -->
+            <router-link to="/admin/products"
                 :class="['flex items-center gap-3 px-4 py-3 rounded-xl text-text-muted hover:bg-bg hover:text-primary transition-all duration-200 group', isCollapsed ? 'justify-center' : '']"
                 active-class="bg-primary/10 text-primary font-medium shadow-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
                 <transition name="fade">
-                    <span v-if="!isCollapsed">Catalog</span>
+                    <span v-if="!isCollapsed">Products</span>
                 </transition>
             </router-link>
 
-            <!-- Cart -->
-            <router-link to="/cart"
-                :class="['flex items-center gap-3 px-4 py-3 rounded-xl text-text-muted hover:bg-bg hover:text-primary transition-all duration-200 group', isCollapsed ? 'justify-center' : '']"
-                active-class="bg-primary/10 text-primary font-medium shadow-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-                <transition name="fade">
-                    <span v-if="!isCollapsed">Cart</span>
-                </transition>
-            </router-link>
-
+            <!-- Back to Shop -->
             <router-link to="/"
                 :class="['flex items-center gap-3 px-4 py-3 rounded-xl text-text-muted hover:bg-bg hover:text-primary transition-all duration-200 group', isCollapsed ? 'justify-center' : '']">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
                 <transition name="fade">
-                    <span v-if="!isCollapsed">Home</span>
+                    <span v-if="!isCollapsed">Back to Shop</span>
                 </transition>
             </router-link>
-
-            
         </nav>
 
         <!-- Footer / Logout -->
@@ -105,7 +89,7 @@ const handleLogout = async () => {
                         <img v-if="profile.profile_img" :src="profile.profile_img" alt="Profile"
                             class="w-full h-full object-cover">
                         <span v-else class="text-text-muted font-bold text-sm">{{
-                            profile.full_name?.charAt(0).toUpperCase() || 'U' }}</span>
+                            profile.full_name?.charAt(0).toUpperCase() || 'A' }}</span>
                     </div>
                     <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-surface">
                     </div>
@@ -114,8 +98,9 @@ const handleLogout = async () => {
                 <!-- Text Info -->
                 <transition name="fade">
                     <div v-if="!isCollapsed" class="overflow-hidden min-w-0 flex-1">
-                        <h3 class="text-sm font-semibold text-text-main truncate">{{ profile.full_name || 'User' }}</h3>
-                        <p class="text-xs text-text-muted truncate">{{ profile.role || 'Member' }}</p>
+                        <h3 class="text-sm font-semibold text-text-main truncate">{{ profile.full_name || 'Admin' }}
+                        </h3>
+                        <p class="text-xs text-text-muted truncate">{{ profile.role || 'Administrator' }}</p>
                     </div>
                 </transition>
             </div>
@@ -163,12 +148,15 @@ const handleLogout = async () => {
 }
 
 .no-scrollbar {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE & Edge lama */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE & Edge lama */
 }
 
 .no-scrollbar::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
+    display: none;
+    /* Chrome, Safari */
 }
 
 /* Ensure whitespace doesn't wrap awkwardly during transition */

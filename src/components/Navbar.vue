@@ -9,14 +9,23 @@
 
     <div class="flex items-center space-x-6">
 
-      <router-link to="/login" class=" hover:text-primary transition font-medium">
-        Login
-      </router-link>
+      <template v-if="!profile">
+        <router-link to="/login" class=" hover:text-primary transition font-medium">
+          Login
+        </router-link>
 
-      <router-link to="/signup"
-        class="bg-primary text-white px-4 py-2 rounded-xl shadow-lg hover:bg-primary-dark transition transform hover:-translate-y-0.5">
-        Sign Up
-      </router-link>
+        <router-link to="/signup"
+          class="bg-primary text-white px-4 py-2 rounded-xl shadow-lg hover:bg-primary-dark transition transform hover:-translate-y-0.5">
+          Sign Up
+        </router-link>
+      </template>
+
+      <template v-else>
+        <router-link to="/dashboard"
+          class="bg-primary text-white px-4 py-2 rounded-xl shadow-lg hover:bg-primary-dark transition transform hover:-translate-y-0.5 font-medium">
+          Dashboard
+        </router-link>
+      </template>
 
       <!-- Theme Toggle Button -->
       <button @click="themeStore.toggleTheme()" class="p-2 rounded-full hover:bg-bg-alt transition focus:outline-none">
@@ -29,8 +38,7 @@
         <!-- Moon Icon (for Light Mode) -->
         <svg v-else xmlns="http://www.w3.org/2000/svg" :class="['h-6 w-6',
           isScrolled ? 'text-black' : 'text-white'
-        ]" fill="none" viewBox="0 0 24 24"
-          stroke="currentColor">
+        ]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
         </svg>
@@ -42,15 +50,18 @@
 <script setup>
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useThemeStore } from '../stores/themeStore'
+import { useAuth } from '../composables/useAuth'
 
 const themeStore = useThemeStore()
+const { profile, fetchProfile } = useAuth()
 const isScrolled = ref(false)
 
 const handleScroll = () => {
   isScrolled.value = window.scrollY > 100
 }
 
-onMounted(() => {
+onMounted(async () => {
+  await fetchProfile()
   themeStore.initTheme()
   window.addEventListener('scroll', handleScroll)
 })

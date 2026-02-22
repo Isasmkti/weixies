@@ -2,6 +2,7 @@
   <footer class="bg-surface border-t border-bg-alt text-text transition-colors duration-300">
     <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
       <div class="xl:grid xl:grid-cols-3 xl:gap-8">
+
         <!-- Brand Section -->
         <div class="space-y-8 xl:col-span-1">
           <span class="text-2xl font-bold text-text-main tracking-tight">Weixies</span>
@@ -28,6 +29,7 @@
             </a>
           </div>
         </div>
+
 <!-- Menus Grid -->
 <div class="mt-12 grid grid-cols-2 gap-8 xl:mt-0 xl:col-span-2">
   <div class="md:grid md:grid-cols-2 md:gap-8">
@@ -55,6 +57,7 @@
   </div>
 
   <div class="md:grid md:grid-cols-2 md:gap-8">
+
     <!-- Company -->
     <div>
       <h3 class="text-sm font-bold text-text-main tracking-wider uppercase">Company</h3>

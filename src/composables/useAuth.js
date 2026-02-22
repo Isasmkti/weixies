@@ -48,12 +48,26 @@ export function useAuth() {
   }
 
   const fetchProfile = async () => {
+    // Get current user to access metadata
+    const { data: { user: currentUser } } = await supabase.auth.getUser()
+    if (currentUser) {
+      user.value = currentUser
+    }
+
     const { data, error } = await supabase
       .from('profiles')
-      .select('id, full_name, role, profile_img')
+      .select('*')
       .single()
 
     if (error) throw error
+
+    // Fix: If DB profile name defaults to email, use metadata name instead
+    if (data && currentUser && currentUser.user_metadata?.full_name) {
+      if (!data.full_name || data.full_name === currentUser.email) {
+        data.full_name = currentUser.user_metadata.full_name
+      }
+    }
+
     profile.value = data
   }
 
