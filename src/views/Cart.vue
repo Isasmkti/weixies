@@ -1,6 +1,6 @@
 <template>
     <DashboardLayout>
-        <div class="max-w-4xl mx-auto font-poppins">
+        <div class="max-w-[1600px] mx-auto font-poppins">
             <!-- Header -->
             <div
                 class="flex items-center gap-4 mb-10 hover:translate-x-1 transition-transform w-fit cursor-pointer group">

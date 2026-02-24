@@ -77,12 +77,12 @@
             </div>
 
             <div v-else class="grid items-center grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
-                <div v-for="product in products" :key="product.id"
+                <div v-for="product in products" :key="product.id" @click="router.push(`/products/${product.slug}`)"
                     class="group bg-surface rounded-2xl shadow-lg shadow-black/5 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 border border-bg-alt overflow-hidden flex flex-col h-full">
 
                     <!-- Image Container -->
                     <!-- Aspect ratio 16:9 for more width -->
-                    <div class="relative aspect-video overflow-hidden bg-bg-alt">
+                    <div class="relative aspect-[4/3] overflow-hidden bg-bg-alt">
                         <img v-if="product.image_url" :src="product.image_url" :alt="product.name"
                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                         <defaultProduct v-else
@@ -100,7 +100,7 @@
                     </div>
 
                     <!-- Content -->
-                    <div class="p-6 flex flex-col flex-grow" @click="router.push(`/products/${product.slug}`)">
+                    <div class="p-6 flex flex-col flex-grow" >
                         <h3
                             class="text-lg font-bold text-text-main mb-2 line-clamp-1 group-hover:text-primary transition-colors font-poppins">
                             {{ product.name }}</h3>
@@ -182,58 +182,19 @@
 </template>
 
 <script setup>
-import { onMounted, computed, ref, watch } from 'vue'
+
+import { useCatalogUI } from '../services/catalogUIService'
 import DashboardLayout from '../components/layouts/DashboardLayout.vue'
-import { useProductsStore } from '../stores/productsStore'
-import { useCartStore } from '../stores/cartStore'
-import { getUser } from '../services/authService'
-import defaultProduct from '../components/defaultProduct.vue'
-import { useRouter } from 'vue-router'
+import  router  from '../router/index'
 
-const router = useRouter()
-const productsStore = useProductsStore()
-const cartStore = useCartStore()
-
-const products = computed(() => productsStore.products)
-const loading = computed(() => productsStore.loading)
-const error = computed(() => productsStore.error)
-
-const addingToCart = ref(null)
-const searchInput = ref('')
-let timeout = null
-
-watch(searchInput, (val) => {
-    clearTimeout(timeout)
-    timeout = setTimeout(() => {
-        productsStore.setSearch(val)
-    }, 400)
-})
-
-onMounted(async () => {
-    await productsStore.stAll()
-})
-
-const onSortChange = (e) => {
-    const [by, order] = e.target.value.split('-')
-    productsStore.changeSort({ by, order })
-}
-
-
-const addToCart = async (productId) => {
-    const user = await getUser()
-    if (!user) {
-        router.push('/login')
-        return
-    }
-
-    try {
-        addingToCart.value = productId
-        await cartStore.stAddToCart(user.id, productId)
-        // Optional: Show success toast
-    } catch (err) {
-        console.error('Failed to add to cart:', err)
-    } finally {
-        addingToCart.value = null
-    }
-}
+const {
+  products,
+  loading,
+  error,
+  searchInput,
+  addingToCart,
+  onSortChange,
+  addToCart,
+  productsStore
+} = useCatalogUI()
 </script>

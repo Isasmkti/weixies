@@ -136,7 +136,7 @@ const handleLogout = async () => {
 
             <!-- Collapse Toggle -->
             <button @click="isCollapsed = !isCollapsed"
-                class="absolute -right-3 top-0 transform -translate-y-1/2 bg-surface border border-bg-alt shadow-md rounded-full p-1.5 text-text-muted hover:text-primary transition-colors cursor-pointer z-50">
+                class="absolute -right-3 top-0 transform -translate-y-1/2 bg-surface shadow-md rounded-full p-1.5 text-text-muted hover:text-primary transition-colors cursor-pointer z-50">
                 <svg v-if="!isCollapsed" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />

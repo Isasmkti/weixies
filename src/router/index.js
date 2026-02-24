@@ -17,7 +17,12 @@ const routes = [
   { path: "/signup", component: SignUp },
 
   { path: "/products", component: Catalog },
-  { path: "/products/:slug", component: () => import("../views/ProductDetail.vue") },
+  {
+    path: "/products/:slug",
+    name: "product-detail",
+    component: () => import("../views/ProductDetail.vue"),
+    props: true,
+  },
 
   {
     path: "/cart",

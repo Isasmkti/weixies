@@ -14,7 +14,7 @@ onMounted(async () => {
 
 <template>
     <DashboardLayout>
-        <div class="max-w-5xl mx-auto space-y-10 py-6">
+        <div class="max-w-[1600px] mx-auto font-poppins space-y-10 py-6">
             <!-- Hero Profile Section -->
             <div
                 class="relative overflow-hidden bg-surface rounded-[2.5rem] p-12 shadow-2xl shadow-black/[0.03] border border-bg-alt/50 group">

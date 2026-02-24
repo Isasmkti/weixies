@@ -63,6 +63,20 @@ const handleLogout = async () => {
                 </transition>
             </router-link>
 
+            <!-- Profile -->
+            <router-link to="/dashboard"
+                :class="['flex items-center gap-3 px-4 py-3 rounded-xl text-text-muted hover:bg-bg hover:text-primary transition-all duration-200 group', isCollapsed ? 'justify-center' : '']"
+                active-class="bg-primary/10 text-primary font-medium shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M5.121 17.804A13.937 13.937 0 0112 16c2.387 0 4.634.6 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zM12 22a10 10 0 110-20 10 10 0 010 20z" />
+                </svg>
+                <transition name="fade">
+                    <span v-if="!isCollapsed">Profile</span>
+                </transition>
+            </router-link>
+
             <!-- Back to Shop -->
             <router-link to="/"
                 :class="['flex items-center gap-3 px-4 py-3 rounded-xl text-text-muted hover:bg-bg hover:text-primary transition-all duration-200 group', isCollapsed ? 'justify-center' : '']">
@@ -81,7 +95,7 @@ const handleLogout = async () => {
         <div class="p-4 border-t border-bg-alt/50 flex flex-col gap-2 relative">
             <!-- User Profile Section -->
             <div v-if="profile"
-                :class="['bg-bg p-3 rounded-xl flex items-center gap-3 border border-bg-alt/50 transition-all duration-300', isCollapsed ? 'justify-center p-2' : '']">
+                :class="['p-3 rounded-xl flex items-center gap-3 transition-all duration-300', isCollapsed ? 'justify-center p-2' : 'bg-bg border border-bg-alt/50']">
                 <!-- Profile Image -->
                 <div class="relative shrink-0">
                     <div
