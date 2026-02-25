@@ -69,7 +69,7 @@ onMounted(async () => {
                     <!-- Quick Stats/Actions -->
                     <div class="mt-12 flex flex-wrap justify-center gap-4">
                         <button
-                            class="px-8 py-3.5 bg-primary text-white rounded-2xl font-bold shadow-[0_10px_30px_rgba(var(--primary-rgb),0.3)] hover:bg-primary-dark hover:-translate-y-1 transition-all">
+                            class="px-8 py-3.5 bg-primary text-white rounded-2xl font-bold shadow-[0_10px_30px_rgb(var(--color-primary)/0.3)] hover:bg-primary-dark hover:-translate-y-1 transition-all">
                             Manage Portfolio
                         </button>
                         <button

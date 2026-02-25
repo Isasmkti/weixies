@@ -57,6 +57,7 @@ export function useCatalogUI() {
     addingToCart,
     onSortChange,
     addToCart,
-    productsStore
+    productsStore,
+    cartStore
   }
 }

@@ -151,6 +151,7 @@ import DashboardLayout from '../components/layouts/DashboardLayout.vue'
 import { useCartStore } from '../stores/cartStore'
 import { getUser } from '../services/authService'
 import { useRouter } from 'vue-router'
+import Swal from 'sweetalert2'
 
 const router = useRouter()
 const cartStore = useCartStore()
@@ -175,7 +176,21 @@ onMounted(async () => {
 })
 
 const removeFromCart = async (itemId) => {
-    if (confirm('Are you sure you want to remove this item?')) {
+    const result = await Swal.fire({
+          title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        background: 'rgb(var(--color-surface))',
+        color: 'rgb(var(--color-text))',
+        confirmButtonColor: 'rgb(var(--color-primary))',
+        cancelButtonColor: '#ef4444',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, remove it!',
+        customClass: {
+            popup: 'rounded-2xl shadow-xl'
+        }
+    })
+    if (result.isConfirmed) {
         await cartStore.stRemoveFromCart(itemId)
     }
 }

@@ -9,6 +9,7 @@ import Catalog from "../views/Catalog.vue";
 import Cart from "../views/Cart.vue";
 import AdminDashboard from "../views/admin/AdminDashboard.vue";
 import ProductCreate from "../views/admin/ProductCreate.vue";
+import AdminProductList from "../views/admin/AdminProductList.vue";
 
 const routes = [
   { path: "/", component: Welcome },
@@ -43,7 +44,7 @@ const routes = [
   },
   {
     path: "/admin/products",
-    component: AdminDashboard,
+    component: AdminProductList,
     meta: { requiresAuth: true, role: "admin" },
   },
 

@@ -2,8 +2,7 @@
     <DashboardLayout>
         <div class="max-w-6xl mx-auto font-poppins">
             <div v-if="loading" class="bg-surface rounded-3xl border border-bg-alt/60 p-12 text-center shadow-lg">
-                <div
-                    class="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-primary/30 border-t-primary">
+                <div class="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-primary/30 border-t-primary">
                 </div>
                 <p class="mt-4 text-text-muted font-semibold">Loading product details...</p>
             </div>
@@ -23,8 +22,7 @@
                         class="inline-flex items-center gap-2 text-text-muted hover:text-primary font-semibold transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 19l-7-7 7-7" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                         </svg>
                         Back to Catalog
                     </router-link>
@@ -60,7 +58,8 @@
                                     class="inline-flex rounded-full border border-primary/15 bg-primary/5 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary">
                                     Product Detail
                                 </span>
-                                <h1 class="text-3xl md:text-4xl font-extrabold text-text-main tracking-tight leading-tight">
+                                <h1
+                                    class="text-3xl md:text-4xl font-extrabold text-text-main tracking-tight leading-tight">
                                     {{ product.name }}
                                 </h1>
                                 <p class="text-text-muted leading-relaxed text-base md:text-lg">
@@ -74,7 +73,8 @@
                                     <p class="text-3xl font-black text-text-main mt-2">{{ formattedPrice }}</p>
                                 </div>
                                 <div class="rounded-2xl border border-bg-alt bg-bg/70 p-4">
-                                    <p class="text-xs uppercase tracking-widest text-text-muted font-semibold">Status</p>
+                                    <p class="text-xs uppercase tracking-widest text-text-muted font-semibold">Status
+                                    </p>
                                     <p class="text-lg font-bold text-primary mt-2">Available</p>
                                 </div>
                             </div>
@@ -108,10 +108,10 @@
 <script setup>
 
 const props = defineProps({
-  slug: {
-    type: String,
-    required: true
-  }
+    slug: {
+        type: String,
+        required: true
+    }
 })
 
 import { useProductDetailUI } from '../services/productDetailUIService'
@@ -119,18 +119,18 @@ import DashboardLayout from '../components/layouts/DashboardLayout.vue'
 import router from '../router/index';
 
 const {
-  product,
-  loading,
-  error,
-  addingToCart,
-  formattedPrice,
-  addToCart
+    product,
+    loading,
+    error,
+    addingToCart,
+    formattedPrice,
+    addToCart
 } = useProductDetailUI(props.slug)
 </script>
 
 <style scoped>
 .pattern-grid {
-    background-image: radial-gradient(circle at 1px 1px, rgba(var(--color-primary), 0.14) 1px, transparent 0);
+    background-image: radial-gradient(circle at 1px 1px, rgb(var(--color-primary) / 0.14) 1px, transparent 0);
     background-size: 22px 22px;
 }
 </style>

@@ -4,44 +4,68 @@ import { ref } from 'vue'
 export const useThemeStore = defineStore('theme', () => {
     const mode = ref('system') // 'light' | 'dark' | 'system'
     const isDark = ref(false)
-    let mediaQuery
+    let mediaQuery = null
+    let mediaListener = null
+
+    const VALID_MODES = ['light', 'dark', 'system']
+
+    const resolveMode = (value) => (VALID_MODES.includes(value) ? value : 'system')
+
+    const getMediaQuery = () => {
+        if (!mediaQuery) {
+            mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+        }
+        return mediaQuery
+    }
 
     const apply = (dark) => {
         isDark.value = dark
         document.documentElement.classList.toggle('dark', dark)
+        document.documentElement.style.colorScheme = dark ? 'dark' : 'light'
+    }
+
+    const applyCurrentTheme = () => {
+        if (mode.value === 'dark') {
+            apply(true)
+            return
+        }
+
+        if (mode.value === 'light') {
+            apply(false)
+            return
+        }
+
+        apply(getMediaQuery().matches)
     }
 
     const setTheme = (value) => {
-        mode.value = value
-        localStorage.theme = value
+        mode.value = resolveMode(value)
+        localStorage.setItem('theme', mode.value)
+        applyCurrentTheme()
+    }
 
-        if (value === 'system') {
-            apply(window.matchMedia('(prefers-color-scheme: dark)').matches)
+    const watchSystemTheme = () => {
+        if (mediaListener) return
+
+        mediaListener = (e) => {
+            if (mode.value === 'system') {
+                apply(e.matches)
+            }
+        }
+
+        const mq = getMediaQuery()
+        if (mq.addEventListener) {
+            mq.addEventListener('change', mediaListener)
         } else {
-            apply(value === 'dark')
+            mq.addListener(mediaListener)
         }
     }
 
     const initTheme = () => {
-        const saved = localStorage.theme || 'system'
-        mode.value = saved
-
-        if (saved === 'system') {
-            mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-            apply(mediaQuery.matches)
-        } else {
-            apply(saved === 'dark')
-        }
-    }
-
-    const watchSystemTheme = () => {
-        if (!mediaQuery) return
-
-        mediaQuery.addEventListener('change', (e) => {
-            if (mode.value === 'system') {
-                apply(e.matches)
-            }
-        })
+        const saved = localStorage.getItem('theme') || 'system'
+        mode.value = resolveMode(saved)
+        applyCurrentTheme()
+        watchSystemTheme()
     }
 
     const toggleTheme = () => {

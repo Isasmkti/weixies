@@ -13,13 +13,13 @@ onMounted(async () => {
 
 const handleLogout = async () => {
     await signOut()
-    router.push('/login')
+    router.push('/')
 }
 </script>
 
 <template>
     <aside
-        :class="['bg-surface shadow-[4px_0_24px_rgba(0,0,0,0.02)] h-screen flex flex-col transition-all duration-300 relative z-20 border-r border-bg-alt/50 ', isCollapsed ? 'w-20' : 'w-72']">
+        :class="['bg-surface shadow-[4px_0_24px_rgba(0,0,0,0.02)] h-screen flex flex-col transition-all duration-300 relative z-20  ', isCollapsed ? 'w-20' : 'w-72']">
 
         <!-- Header / Branding -->
         <div class="p-6 flex items-center gap-4">
@@ -63,19 +63,7 @@ const handleLogout = async () => {
                 </transition>
             </router-link>
 
-            <!-- Profile -->
-            <router-link to="/dashboard"
-                :class="['flex items-center gap-3 px-4 py-3 rounded-xl text-text-muted hover:bg-bg hover:text-primary transition-all duration-200 group', isCollapsed ? 'justify-center' : '']"
-                active-class="bg-primary/10 text-primary font-medium shadow-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M5.121 17.804A13.937 13.937 0 0112 16c2.387 0 4.634.6 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zM12 22a10 10 0 110-20 10 10 0 010 20z" />
-                </svg>
-                <transition name="fade">
-                    <span v-if="!isCollapsed">Profile</span>
-                </transition>
-            </router-link>
+          
 
             <!-- Back to Shop -->
             <router-link to="/"
@@ -92,20 +80,20 @@ const handleLogout = async () => {
         </nav>
 
         <!-- Footer / Logout -->
-        <div class="p-4 border-t border-bg-alt/50 flex flex-col gap-2 relative">
+        <div class="p-4  flex flex-col gap-2 relative">
             <!-- User Profile Section -->
             <div v-if="profile"
                 :class="['p-3 rounded-xl flex items-center gap-3 transition-all duration-300', isCollapsed ? 'justify-center p-2' : 'bg-bg border border-bg-alt/50']">
                 <!-- Profile Image -->
                 <div class="relative shrink-0">
                     <div
-                        class="w-10 h-10 rounded-full bg-bg-alt border-2 border-surface flex items-center justify-center overflow-hidden">
+                        class="w-10 h-10 rounded-full bg-bg-alt flex items-center justify-center overflow-hidden">
                         <img v-if="profile.profile_img" :src="profile.profile_img" alt="Profile"
                             class="w-full h-full object-cover">
                         <span v-else class="text-text-muted font-bold text-sm">{{
                             profile.full_name?.charAt(0).toUpperCase() || 'A' }}</span>
                     </div>
-                    <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-surface">
+                    <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full ">
                     </div>
                 </div>
 
@@ -135,7 +123,7 @@ const handleLogout = async () => {
 
             <!-- Collapse Toggle -->
             <button @click="isCollapsed = !isCollapsed"
-                class="absolute -right-3 top-0 transform -translate-y-1/2 bg-surface border border-bg-alt shadow-md rounded-full p-1.5 text-text-muted hover:text-primary transition-colors cursor-pointer z-50">
+                class="absolute -right-3 top-0 transform -translate-y-1/2 bg-surface shadow-md rounded-full p-1.5 text-text-muted hover:text-primary transition-colors cursor-pointer z-50">
                 <svg v-if="!isCollapsed" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />

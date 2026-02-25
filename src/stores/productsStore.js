@@ -1,6 +1,23 @@
 import { defineStore } from 'pinia'
 import * as productsService from '../services/productsService'
 
+const FETCH_TIMEOUT_MS = 15000
+
+function withTimeout(promise, timeoutMs = FETCH_TIMEOUT_MS) {
+    let timeoutId
+
+    return Promise.race([
+        promise,
+        new Promise((_, reject) => {
+            timeoutId = setTimeout(() => {
+                reject(new Error('Request timed out while loading products'))
+            }, timeoutMs)
+        })
+    ]).finally(() => {
+        clearTimeout(timeoutId)
+    })
+}
+
 export const useProductsStore = defineStore('products', {
     state: () => ({
         products: [],
@@ -23,25 +40,28 @@ export const useProductsStore = defineStore('products', {
     actions: {
 
 
-        async stAll(page = this.page) {
+        async stAll(page) {
+            const targetPage = Number.isFinite(page) && page > 0 ? page : this.page
             const current = ++this.requestId
             this.loading = true
             this.error = null
 
             try {
-                const res = await productsService.sAll(
-                    page,
-                    this.limit,
-                    this.sortBy,
-                    this.sortOrder,
-                    this.search
+                const res = await withTimeout(
+                    productsService.sAll(
+                        targetPage,
+                        this.limit,
+                        this.sortBy,
+                        this.sortOrder,
+                        this.search
+                    )
                 )
 
                 if (current !== this.requestId) return
 
-                this.products = res.data
-                this.total = res.total
-                this.page = page
+                this.products = Array.isArray(res?.data) ? res.data : []
+                this.total = Number(res?.total) || 0
+                this.page = targetPage
             } catch (err) {
                 if (current === this.requestId) {
                     this.error = err.message || 'Failed to load products'
