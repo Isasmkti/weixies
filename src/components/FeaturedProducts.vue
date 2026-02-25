@@ -60,6 +60,6 @@
 </style>
 
 <script setup>
-import { useWelcomeStore } from '../stores/welcomestore'
+import { useWelcomeStore } from '../stores/welcomeStore'
 const store = useWelcomeStore()
 </script>
