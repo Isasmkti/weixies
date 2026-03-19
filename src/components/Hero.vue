@@ -20,69 +20,74 @@
     </div>
 
     <!-- Hero -->
-     
     <template v-else-if="currentItem">
-        <MotionGroup preset="fade" :duration="1000" :delay="500">
-      <!-- Background -->
-      <div class="absolute inset-0">
-        
-        <img
-          :src="currentItem.image"
-          alt="Hero Background"
-          class="h-full w-full object-cover"
-        />
-        
+      <MotionGroup preset="fade" :duration="1000" :delay="500">
+        <!-- Background -->
+        <div class="absolute inset-0">
+          <img
+            :src="currentItem.image"
+            alt="Hero Background"
+            class="h-full w-full object-cover scale-110 animate-subtle-zoom"
+          />
+          
+          <!-- Soft radial gradient -->
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.2),rgba(0,0,0,0.75))]"></div>
 
-        <!-- Soft radial gradient -->
-        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.25),rgba(0,0,0,0.65))]"></div>
+          <!-- Subtle primary tint -->
+          <div class="absolute inset-0 bg-primary/10"></div>
 
-        <!-- Subtle primary tint -->
-        <div class="absolute inset-0 bg-primary/10"></div>
-
-        <!-- Bottom fade -->
-        <div class="absolute bottom-0 inset-x-0 h-72 bg-gradient-to-t from-bg-alt to-transparent"></div>
-      </div>
-     </MotionGroup>
+          <!-- Bottom fade -->
+          <div class="absolute bottom-0 inset-x-0 h-96 bg-gradient-to-t from-bg-alt via-bg-alt/80 to-transparent"></div>
+        </div>
+      </MotionGroup>
 
       <!-- Content -->
       <MotionGroup preset="fade" :duration="1000" :delay="1000">
-      <main class="relative z-10 max-w-4xl mx-auto px-6 text-center pt-28 pb-16">
-        <h1
-          class="text-4xl md:text-6xl font-bold tracking-tight text-white leading-tight"
-        >
-          {{ currentItem.title }}
-        </h1>
-
-        <p
-          class="mt-6 max-w-2xl mx-auto text-lg font-regular md:text-xl text-white/85 leading-relaxed"
-        >
-          {{ currentItem.description }}
-        </p>
-
-        <!-- CTA -->
-        <div class="mt-12 flex flex-col sm:flex-row justify-center gap-4">
-          <a
-            href="#"
-            class="inline-flex items-center justify-center rounded-full bg-white px-8 py-3 text-base font-semibold text-primary shadow-md hover:shadow-lg hover:-translate-y-0.5 transition"
+        <main class="relative z-10 max-w-6xl mx-auto px-6 text-center pt-32 pb-20 md:pt-48 md:pb-36 lg:pt-56 lg:pb-44">
+          <h1
+            class="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tight text-white leading-[1.1] drop-shadow-2xl"
           >
-            Get Started
-          </a>
+            {{ currentItem.title }}
+          </h1>
 
-          <a
-            href="#"
-            class="inline-flex items-center justify-center rounded-full border border-white/40 px-8 py-3 text-base font-medium text-white hover:bg-white/10 transition"
+          <p
+            class="mt-8 max-w-2xl mx-auto text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 leading-relaxed font-medium drop-shadow-lg"
           >
-            Live Demo
-          </a>
-        </div>
-      </main>
+            {{ currentItem.description }}
+          </p>
+
+          <!-- CTA -->
+          <div class="mt-12 flex flex-col sm:flex-row justify-center items-center gap-4 md:gap-6">
+            <a
+              href="#"
+              class="w-full sm:w-auto inline-flex items-center justify-center rounded-full bg-primary px-8 md:px-10 py-4 text-base md:text-lg font-bold text-white shadow-2xl hover:shadow-primary/40 hover:-translate-y-1 transition-all duration-300"
+            >
+              Get Started
+            </a>
+
+            <a
+              href="#"
+              class="w-full sm:w-auto inline-flex items-center justify-center rounded-full border-2 border-white/50 backdrop-blur-sm px-8 md:px-10 py-4 text-base md:text-lg font-bold text-white hover:bg-white hover:text-black transition-all duration-300"
+            >
+              Live Demo
+            </a>
+          </div>
+        </main>
       </MotionGroup>
-       
     </template>
    
   </div>
 </template>
 
+<style scoped>
+@keyframes subtle-zoom {
+  0% { transform: scale(1.05); }
+  100% { transform: scale(1.15); }
+}
+.animate-subtle-zoom {
+  animation: subtle-zoom 20s ease-in-out infinite alternate;
+}
+</style>
 
 <script setup>
 import { onMounted, computed } from 'vue'
