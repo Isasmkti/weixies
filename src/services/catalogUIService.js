@@ -49,6 +49,16 @@ export function useCatalogUI() {
     }
   }
 
+  const getMainImage = (product) => {
+    if (product?.product_images && product.product_images.length > 0) {
+      const main = product.product_images.find(img => img.is_primary)
+      if (main && main.image_url) return main.image_url
+      if (product.product_images[0]?.image_url) return product.product_images[0].image_url
+    }
+    if (product?.image_url) return product.image_url
+    return null;
+  }
+
   return {
     products,
     loading,
@@ -57,6 +67,7 @@ export function useCatalogUI() {
     addingToCart,
     onSortChange,
     addToCart,
+    getMainImage,
     productsStore,
     cartStore
   }

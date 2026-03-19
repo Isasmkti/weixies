@@ -32,7 +32,7 @@ export async function rGetCartItems(cartId) {
             .from('cart_items')
             .select(`
                 *,
-                product:products (*)
+                product:products (*, product_images(*))
             `)
             .eq('cart_id', cartId)
             .order('created_at', { ascending: true })

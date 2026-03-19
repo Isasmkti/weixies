@@ -59,7 +59,21 @@ export const useProductsStore = defineStore('products', {
 
                 if (current !== this.requestId) return
 
-                this.products = Array.isArray(res?.data) ? res.data : []
+                const rawData = Array.isArray(res?.data) ? res.data : []
+                console.log('[productsStore.stAll] Fetched raw catalog data:', rawData)
+                
+                this.products = rawData.map(product => {
+                    let main = null;
+                    if (product?.product_images && product.product_images.length > 0) {
+                        const primary = product.product_images.find(img => img.is_primary);
+                        if (primary && primary.image_url) main = primary.image_url;
+                        else if (product.product_images[0]?.image_url) main = product.product_images[0].image_url;
+                    } else if (product?.image_url) {
+                        main = product.image_url;
+                    }
+                    console.log(`[productsStore.stAll] Evaluated main_image for ${product.id}:`, main)
+                    return { ...product, image_url: main, main_image: main };
+                })
                 this.total = Number(res?.total) || 0
                 this.page = targetPage
             } catch (err) {
@@ -95,10 +109,11 @@ export const useProductsStore = defineStore('products', {
             }
         },
 
-        async createProduct(product) {
+        async createProduct(payload) {
             this.loading = true
             try {
-                const newProduct = await productsService.sCreate(product)
+                const { images, ...productData } = payload
+                const newProduct = await productsService.sCreate(productData, images)
                 this.products.unshift(newProduct) // Add to list if needed, or just let caller handle refresh
                 return newProduct
             } catch (error) {
@@ -109,10 +124,11 @@ export const useProductsStore = defineStore('products', {
             }
         },
 
-        async updateProduct(id, product) {
+        async updateProduct(id, payload) {
             this.loading = true
             try {
-                const updated = await productsService.sUpdate(id, product)
+                const { images, ...productData } = payload
+                const updated = await productsService.sUpdate(id, productData, images)
                 const index = this.products.findIndex(p => p.id === id)
                 if (index !== -1) {
                     this.products[index] = updated

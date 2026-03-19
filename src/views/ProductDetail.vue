@@ -43,12 +43,24 @@
                     </div>
 
                     <div class="relative grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-                        <div class="rounded-3xl border border-bg-alt bg-bg-alt/50 p-4">
-                            <div
-                                class="aspect-square w-full overflow-hidden rounded-2xl bg-bg flex items-center justify-center">
-                                <img v-if="product.image_url" :src="product.image_url" :alt="product.name"
-                                    class="h-full w-full object-cover">
-                                <defaultProduct v-else class="h-40 w-40 text-text-muted/60" />
+                        <div class="space-y-4">
+                            <!-- Main Large Image -->
+                            <div class="rounded-3xl border border-bg-alt bg-bg-alt/50 p-4">
+                                <div class="aspect-square w-full overflow-hidden rounded-2xl bg-bg flex items-center justify-center">
+                                    <img v-if="selectedImage" :src="selectedImage" :alt="product.name"
+                                        class="h-full w-full object-cover transition-all duration-300">
+                                    <defaultProduct v-else class="h-40 w-40 text-text-muted/60" />
+                                </div>
+                            </div>
+                            
+                            <!-- Thumbnails -->
+                            <div v-if="productImages && productImages.length > 0" class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                                <button v-for="(img, idx) in productImages" :key="idx" 
+                                    @click="selectedImage = img.image_url"
+                                    :class="['flex-shrink-0 h-20 w-20 rounded-xl overflow-hidden border-2 transition-all', 
+                                            selectedImage === img.image_url ? 'border-primary shadow-md' : 'border-bg-alt opacity-70 hover:opacity-100']">
+                                    <img :src="img.image_url" :alt="`${product.name} image ${idx + 1}`" class="w-full h-full object-cover">
+                                </button>
                             </div>
                         </div>
 
@@ -114,9 +126,10 @@ const props = defineProps({
     }
 })
 
+import defaultProduct from '../components/defaultProduct.vue'
 import { useProductDetailUI } from '../services/productDetailUIService'
 import DashboardLayout from '../components/layouts/DashboardLayout.vue'
-import router from '../router/index';
+// import router from '../router/index';
 
 const {
     product,
@@ -124,7 +137,9 @@ const {
     error,
     addingToCart,
     formattedPrice,
-    addToCart
+    addToCart,
+    productImages,
+    selectedImage
 } = useProductDetailUI(props.slug)
 </script>
 

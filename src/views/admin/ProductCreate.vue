@@ -51,17 +51,43 @@
                         </div>
                     </div>
 
-                    <!-- Image URL -->
+                    <!-- Product Images -->
                     <div>
-                        <label class="block text-sm font-semibold text-text-main mb-2">Image URL</label>
-                        <input v-model="form.image_url" type="url"
-                            class="w-full rounded-xl border border-bg-alt bg-bg px-4 py-3 focus:ring-2 focus:ring-primary/30 outline-none transition-all"
-                            placeholder="https://example.com/image.jpg">
-
-                        <!-- Image Preview -->
-                        <div v-if="form.image_url"
-                            class="mt-4 h-48 w-full rounded-xl bg-bg-alt overflow-hidden border border-bg-alt relative group">
-                            <img :src="form.image_url" alt="Preview" class="w-full h-full object-contain">
+                        <div class="flex items-center justify-between mb-4">
+                            <label class="block text-sm font-semibold text-text-main">Product Images</label>
+                            <button type="button" @click="addImageUrl" class="text-sm text-primary hover:text-primary-dark font-semibold flex items-center gap-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                </svg>
+                                Add Image
+                            </button>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div v-for="(image, index) in form.images" :key="index" class="bg-bg-alt/30 p-4 rounded-xl border border-bg-alt flex flex-col gap-3">
+                                <div class="flex items-center gap-2">
+                                    <input v-model="form.images[index].image_url" type="url"
+                                        class="flex-1 rounded-lg border border-bg-alt bg-bg px-3 py-2 focus:ring-2 focus:ring-primary/30 outline-none transition-all text-sm"
+                                        placeholder="https://example.com/image.jpg">
+                                    <button type="button" @click="removeImage(index)" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="Remove image">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <label class="flex items-center gap-2 text-sm text-text-muted cursor-pointer">
+                                        <input type="radio" name="main_image" :checked="form.images[index].is_primary" @change="setMainImage(index)" class="text-primary focus:ring-primary h-4 w-4">
+                                        Set as Main Image
+                                    </label>
+                                    <div v-if="form.images[index].image_url" class="h-12 w-12 rounded bg-bg overflow-hidden border border-bg-alt">
+                                        <img :src="form.images[index].image_url" alt="" class="w-full h-full object-cover">
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-if="form.images.length === 0" class="text-center py-6 border-2 border-dashed border-bg-alt rounded-xl text-text-muted text-sm">
+                                No images added yet.
+                            </div>
                         </div>
                     </div>
 
@@ -110,8 +136,26 @@ const form = ref({
     name: '',
     description: '',
     price: 0,
-    image_url: ''
+    images: [] // Array of { image_url: string, is_primary: boolean }
 })
+
+const addImageUrl = () => {
+    form.value.images.push({ image_url: '', is_primary: form.value.images.length === 0 })
+}
+
+const removeImage = (index) => {
+    const wasMain = form.value.images[index].is_primary
+    form.value.images.splice(index, 1)
+    if (wasMain && form.value.images.length > 0) {
+        form.value.images[0].is_primary = true
+    }
+}
+
+const setMainImage = (index) => {
+    form.value.images.forEach((img, i) => {
+        img.is_primary = i === index
+    })
+}
 
 onMounted(async () => {
     if (isEditMode.value) {
@@ -119,7 +163,13 @@ onMounted(async () => {
         try {
             const product = await sGetById(route.params.id)
             if (product) {
-                form.value = { ...product }
+                form.value = {
+                    name: product.name,
+                    description: product.description,
+                    price: product.price,
+                    slug: product.slug,
+                    images: product.product_images ? [...product.product_images].sort((a,b) => (b.is_primary ? 1 : 0) - (a.is_primary ? 1 : 0)) : []
+                }
             }
         } catch (err) {
             error.value = 'Failed to load product details'

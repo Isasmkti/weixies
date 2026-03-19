@@ -1,11 +1,12 @@
 import { ref, computed, onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useProductsStore } from '../stores/productsStore'
 import { useCartStore } from '../stores/cartStore'
 import { getUser } from '../services/authService'
 
-export function useProductDetailUI(slug) {
+export function useProductDetailUI(initialSlug) {
   const router = useRouter()
+  const route = useRoute()
   const productsStore = useProductsStore()
   const cartStore = useCartStore()
 
@@ -13,6 +14,30 @@ export function useProductDetailUI(slug) {
   const loading = ref(true)
   const error = ref('')
   const addingToCart = ref(false)
+
+  const productImages = computed(() => {
+    if (!product.value) return []
+    if (product.value.product_images && product.value.product_images.length > 0) {
+      // Sort so primary image comes first
+      return [...product.value.product_images].sort((a, b) => Number(b.is_primary) - Number(a.is_primary))
+    }
+    if (product.value.image_url) {
+      return [{ image_url: product.value.image_url, is_primary: true }]
+    }
+    return []
+  })
+
+  const selectedImage = ref('')
+
+  watch(productImages, (images) => {
+    if (images.length > 0) {
+      // Select primary image if exists, else first
+      const primary = images.find(img => img.is_primary)
+      selectedImage.value = primary ? primary.image_url : images[0].image_url
+    } else {
+      selectedImage.value = ''
+    }
+  }, { immediate: true })
 
   const formattedPrice = computed(() => {
     const amount = Number(product.value?.price ?? 0)
@@ -24,10 +49,14 @@ export function useProductDetailUI(slug) {
   })
 
   const fetchProduct = async () => {
+    const slug = route.params.slug || initialSlug
+    if (!slug) return
     loading.value = true
     error.value = ''
     try {
       const foundProduct = await productsStore.sGetBySlug(slug)
+      console.log('[ProductDetailUIService] Fetched product data:', foundProduct)
+      console.log('[ProductDetailUIService] Product images:', foundProduct?.product_images)
       if (!foundProduct) {
         throw new Error('The product could not be found.')
       }
@@ -59,7 +88,7 @@ export function useProductDetailUI(slug) {
   }
 
   onMounted(fetchProduct)
-  watch(() => slug, fetchProduct)
+  watch(() => route.params.slug, fetchProduct)
 
   return {
     product,
@@ -67,6 +96,8 @@ export function useProductDetailUI(slug) {
     error,
     addingToCart,
     formattedPrice,
-    addToCart
+    addToCart,
+    productImages,
+    selectedImage
   }
 }

@@ -1,4 +1,4 @@
-import { rAll, rGetById, rGetBySlug, rCreate, rUpdate, rDelete } from '../repositories/productsRepository'
+import { rAll, rGetById, rGetBySlug, rCreate, rUpdate, rDelete, rUpsertImages } from '../repositories/productsRepository'
 
 export async function sAll(page, limit, sortBy, sortOrder, search) {
     try {
@@ -26,17 +26,27 @@ export async function sGetBySlug(slug) {
     }
 }
 
-export async function sCreate(product) {
+export async function sCreate(product, images) {
     try {
-        return await rCreate(product)
+        const newProduct = await rCreate(product)
+        if (newProduct && images) {
+            await rUpsertImages(newProduct.id, images)
+            return await rGetById(newProduct.id)
+        }
+        return newProduct
     } catch (error) {
         throw error
     }
 }
 
-export async function sUpdate(id, product) {
+export async function sUpdate(id, product, images) {
     try {
-        return await rUpdate(id, product)
+        const updatedProduct = await rUpdate(id, product)
+        if (updatedProduct && images) {
+            await rUpsertImages(id, images)
+            return await rGetById(id)
+        }
+        return updatedProduct
     } catch (error) {
         throw error
     }

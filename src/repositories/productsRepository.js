@@ -14,7 +14,7 @@ export async function rAll(
         // ✅ 1. buat query dulu
         let query = supabase
             .from('products')
-            .select('*', { count: 'exact' })
+            .select('*, product_images(*)', { count: 'exact' })
             .order(sortBy, { ascending: sortOrder === 'asc' })
 
         // ✅ 2. apply search SEBELUM dieksekusi
@@ -48,7 +48,7 @@ export async function rGetById(id) {
     try {
         const { data, error } = await supabase
             .from('products')
-            .select('*')
+            .select('*, product_images(*)')
             .eq('id', id)
             .single()
 
@@ -66,7 +66,7 @@ export async function rGetBySlug(slug) {
     try {
         const { data, error } = await supabase
             .from('products')
-            .select('*')
+            .select('*, product_images(*)')
             .eq('slug', slug)
             .single()
 
@@ -122,6 +122,133 @@ export async function rDelete(id) {
         return true
     } catch (err) {
         console.error('rDelete product error:', err)
+        throw err
+    }
+}
+function normalizeImages(images) {
+    if (!images || images.length === 0) return []
+
+    let foundPrimary = false;
+    const result = images.map((img, idx) => {
+        // If already primary and not found yet, mark as primary
+        if (img.is_primary && !foundPrimary) {
+            foundPrimary = true;
+            return { ...img, is_primary: true };
+        }
+        // If no primary found, mark first image as primary
+        if (!foundPrimary && idx === 0) {
+            foundPrimary = true;
+            return { ...img, is_primary: true };
+        }
+        return { ...img, is_primary: false };
+    });
+    return result;
+}
+
+export async function sCreate(product, images) {
+    try {
+        const newProduct = await rCreate(product)
+
+        if (images?.length) {
+            await rUpsertImages(newProduct.id, normalizeImages(images))
+        }
+
+        return await rGetById(newProduct.id)
+    } catch (error) {
+        console.error('sCreate error:', error)
+        throw error
+    }
+}
+
+export async function sUpdate(id, product, images) {
+    try {
+        await rUpdate(id, product)
+
+        if (images) {
+            await rUpsertImages(id, normalizeImages(images))
+        }
+
+        return await rGetById(id)
+    } catch (error) {
+        console.error('sUpdate error:', error)
+        throw error
+    }
+}
+
+
+export async function rUpsertImages(productId, images) {
+    try {
+        if (!images || images.length === 0) return
+
+        // 1. ambil existing
+        const { data: existing, error: fetchError } = await supabase
+            .from('product_images')
+            .select('id')
+            .eq('product_id', productId)
+
+        if (fetchError) throw fetchError
+
+        const existingIds = existing.map(i => i.id)
+        const incomingIds = images.filter(i => i.id).map(i => i.id)
+
+        // 2. DELETE yang tidak ada di incoming
+        const toDelete = existingIds.filter(id => !incomingIds.includes(id))
+
+        if (toDelete.length > 0) {
+            const { error } = await supabase
+                .from('product_images')
+                .delete()
+                .in('id', toDelete)
+
+            if (error) throw error
+        }
+
+        // 3. SPLIT insert & update
+        const toInsert = []
+        const toUpdate = []
+
+        for (const img of images) {
+            if (!img.image_url) {
+                throw new Error('image_url is required')
+            }
+
+            if (img.id) {
+                toUpdate.push(img)
+            } else {
+                toInsert.push(img)
+            }
+        }
+
+        // 4. INSERT
+        if (toInsert.length > 0) {
+            const { error } = await supabase
+                .from('product_images')
+                .insert(
+                    toInsert.map(img => ({
+                        product_id: productId,
+                        image_url: img.image_url,
+                        is_primary: img.is_primary
+                    }))
+                )
+
+            if (error) throw error
+        }
+
+        // 5. UPDATE (IMPORTANT: filter by product_id juga)
+        for (const img of toUpdate) {
+            const { error } = await supabase
+                .from('product_images')
+                .update({
+                    image_url: img.image_url,
+                    is_primary: img.is_primary
+                })
+                .eq('id', img.id)
+                .eq('product_id', productId) // 🔥 penting
+
+            if (error) throw error
+        }
+    } catch (err) {
+        console.error('rUpsertImages error:', err)
         throw err
     }
 }

@@ -322,6 +322,7 @@
 
 <script setup>
 import { computed } from "vue";
+import defaultProduct from "../components/defaultProduct.vue";
 import { useCatalogUI } from "../services/catalogUIService";
 import DashboardLayout from "../components/layouts/DashboardLayout.vue";
 import router from "../router/index";
@@ -334,6 +335,7 @@ const {
   addingToCart,
   onSortChange,
   addToCart,
+  getMainImage,
   productsStore,
   cartStore,
 } = useCatalogUI();
