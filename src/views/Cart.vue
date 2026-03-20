@@ -67,16 +67,16 @@
                         class="bg-surface rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6 border border-bg-alt/50 group">
 
                         <!-- Product Image -->
-                        <div
-                            class="h-24 w-24 flex-shrink-0 overflow-hidden rounded-xl bg-bg-alt border border-bg-alt shadow-inner">
+                        <div @click="router.push(`/products/${item.product?.slug}`)"
+                            class="h-24 w-24 flex-shrink-0 overflow-hidden rounded-xl bg-bg-alt border border-bg-alt shadow-inner cursor-pointer">
                             <img :src="item.product?.image_url || 'https://via.placeholder.com/150'"
                                 :alt="item.product?.name"
                                 class="h-full w-full object-cover object-center group-hover:scale-110 transition-transform duration-500">
                         </div>
 
                         <!-- Details -->
-                        <div class="flex-grow">
-                            <h3 class="text-lg font-bold text-text-main font-poppins mb-1">
+                        <div @click="router.push(`/products/${item.product?.slug}`)" class="flex-grow cursor-pointer">
+                            <h3 class="text-lg font-bold text-text-main font-poppins mb-1 group-hover:text-primary transition-colors">
                                 {{ item.product?.name }}
                             </h3>
                             <p class="text-sm text-text-muted font-montserrat line-clamp-1 mb-2">{{

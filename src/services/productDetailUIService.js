@@ -13,7 +13,7 @@ export function useProductDetailUI(initialSlug) {
   const product = ref(null)
   const loading = ref(true)
   const error = ref('')
-  const addingToCart = ref(false)
+  const addingToCart = ref(null)
 
   const productImages = computed(() => {
     if (!product.value) return []
@@ -48,6 +48,29 @@ export function useProductDetailUI(initialSlug) {
     })
   })
 
+  const randomProducts = ref([])
+
+  const fetchRandomProducts = async () => {
+    try {
+      // Ensure products are loaded in the store
+      if (productsStore.products.length === 0) {
+        await productsStore.stAll()
+      }
+      
+      const allProducts = productsStore.products
+      const currentSlug = route.params.slug || initialSlug
+      
+      // Filter out current product
+      const others = allProducts.filter(p => p.slug !== currentSlug)
+      
+      // Select 4 random products
+      const shuffled = [...others].sort(() => 0.5 - Math.random())
+      randomProducts.value = shuffled.slice(0, 3) // Select 3 random products as catalog usually has 3 cols
+    } catch (err) {
+      console.error('Error fetching random products:', err)
+    }
+  }
+
   const fetchProduct = async () => {
     const slug = route.params.slug || initialSlug
     if (!slug) return
@@ -61,6 +84,9 @@ export function useProductDetailUI(initialSlug) {
         throw new Error('The product could not be found.')
       }
       product.value = foundProduct
+      
+      // Also fetch random products
+      await fetchRandomProducts()
     } catch (err) {
       product.value = null
       error.value = err.message || 'Failed to load this product.'
@@ -70,20 +96,21 @@ export function useProductDetailUI(initialSlug) {
     }
   }
 
-  const addToCart = async () => {
-    if (!product.value?.id) return
+  const addToCart = async (productId) => {
+    const id = productId || product.value?.id
+    if (!id) return
     const user = await getUser()
     if (!user) {
       router.push('/login')
       return
     }
     try {
-      addingToCart.value = true
-      await cartStore.stAddToCart(user.id, product.value.id)
+      addingToCart.value = id
+      await cartStore.stAddToCart(user.id, id)
     } catch (err) {
       console.error('Failed to add to cart:', err)
     } finally {
-      addingToCart.value = false
+      addingToCart.value = null
     }
   }
 
@@ -98,6 +125,7 @@ export function useProductDetailUI(initialSlug) {
     formattedPrice,
     addToCart,
     productImages,
-    selectedImage
+    selectedImage,
+    randomProducts
   }
 }

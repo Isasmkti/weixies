@@ -46,20 +46,23 @@
                         <div class="space-y-4">
                             <!-- Main Large Image -->
                             <div class="rounded-3xl border border-bg-alt bg-bg-alt/50 p-4">
-                                <div class="aspect-square w-full overflow-hidden rounded-2xl bg-bg flex items-center justify-center">
+                                <div
+                                    class="aspect-square w-full overflow-hidden rounded-2xl bg-bg flex items-center justify-center">
                                     <img v-if="selectedImage" :src="selectedImage" :alt="product.name"
                                         class="h-full w-full object-cover transition-all duration-300">
                                     <defaultProduct v-else class="h-40 w-40 text-text-muted/60" />
                                 </div>
                             </div>
-                            
+
                             <!-- Thumbnails -->
-                            <div v-if="productImages && productImages.length > 0" class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-                                <button v-for="(img, idx) in productImages" :key="idx" 
+                            <div v-if="productImages && productImages.length > 0"
+                                class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                                <button v-for="(img, idx) in productImages" :key="idx"
                                     @click="selectedImage = img.image_url"
-                                    :class="['flex-shrink-0 h-20 w-20 rounded-xl overflow-hidden border-2 transition-all', 
-                                            selectedImage === img.image_url ? 'border-primary shadow-md' : 'border-bg-alt opacity-70 hover:opacity-100']">
-                                    <img :src="img.image_url" :alt="`${product.name} image ${idx + 1}`" class="w-full h-full object-cover">
+                                    :class="['flex-shrink-0 h-20 w-20 rounded-xl overflow-hidden border-2 transition-all',
+                                        selectedImage === img.image_url ? 'border-primary shadow-md' : 'border-bg-alt opacity-70 hover:opacity-100']">
+                                    <img :src="img.image_url" :alt="`${product.name} image ${idx + 1}`"
+                                        class="w-full h-full object-cover">
                                 </button>
                             </div>
                         </div>
@@ -74,9 +77,7 @@
                                     class="text-3xl md:text-4xl font-extrabold text-text-main tracking-tight leading-tight">
                                     {{ product.name }}
                                 </h1>
-                                <p class="text-text-muted leading-relaxed text-base md:text-lg">
-                                    {{ product.description || 'No description available for this product yet.' }}
-                                </p>
+
                             </div>
 
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -112,6 +113,76 @@
                         </div>
                     </div>
                 </section>
+
+
+                
+                <section class="rounded-[2rem] border border-bg-alt/60 bg-surface p-6 md:p-10 shadow-lg">
+                    <div class="max-w-3xl">
+                        <h2 class="text-2xl md:text-3xl font-bold text-text-main mb-4">
+                            Product Description
+                        </h2>
+
+                        <div class="prose prose-neutral max-w-none text-text-muted leading-relaxed">
+                            <p v-if="product.description">
+                                {{ product.description }}
+                            </p>
+                            <p v-else>
+                                No description available for this product yet.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+
+                <section v-if="randomProducts && randomProducts.length > 0" class="space-y-8 pt-8">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-2xl md:text-3xl font-bold text-text-main">
+                            You Might Also Like
+                        </h2>
+                        <router-link to="/products" class="text-primary font-semibold hover:underline">
+                            View All
+                        </router-link>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div v-for="rp in randomProducts" :key="rp.id" @click="router.push(`/products/${rp.slug}`)"
+                            class="group bg-surface rounded-2xl shadow-lg shadow-black/5 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 border border-bg-alt overflow-hidden flex flex-col cursor-pointer">
+                            <div class="relative aspect-[4/3] overflow-hidden bg-bg-alt">
+                                <img v-if="rp.image_url" :src="rp.image_url" :alt="rp.name"
+                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                                <defaultProduct v-else
+                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                </div>
+                            </div>
+                            <div class="p-5 flex flex-col flex-grow">
+                                <h3
+                                    class="text-lg font-bold text-text-main mb-2 line-clamp-1 group-hover:text-primary transition-colors">
+                                    {{ rp.name }}
+                                </h3>
+                                <p class="text-text-muted text-sm mb-4 line-clamp-2 flex-grow">
+                                    {{ rp.description }}
+                                </p>
+                                <div class="flex justify-between items-center mt-auto pt-4 border-t border-bg-alt">
+                                    <span class="text-xl font-extrabold text-text-main">
+                                        {{ rp.price ? `$${Number(rp.price).toFixed(2)}` : '$0.00' }}
+                                    </span>
+                                    <button @click.stop="addToCart(rp.id)" :disabled="addingToCart === rp.id"
+                                        class="p-2.5 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                                        <span v-if="addingToCart === rp.id"
+                                            class="h-5 w-5 animate-spin rounded-full border-2 border-primary/40 border-t-primary"></span>
+                                        <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
     </DashboardLayout>
@@ -129,7 +200,7 @@ const props = defineProps({
 import defaultProduct from '../components/defaultProduct.vue'
 import { useProductDetailUI } from '../services/productDetailUIService'
 import DashboardLayout from '../components/layouts/DashboardLayout.vue'
-// import router from '../router/index';
+import router from '../router/index';
 
 const {
     product,
@@ -139,7 +210,8 @@ const {
     formattedPrice,
     addToCart,
     productImages,
-    selectedImage
+    selectedImage,
+    randomProducts
 } = useProductDetailUI(props.slug)
 </script>
 
