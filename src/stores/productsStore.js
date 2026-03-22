@@ -134,7 +134,8 @@ export const useProductsStore = defineStore('products', {
 
         async sGetBySlug(slug) {
             try {
-                return await productsService.sGetBySlug(slug)
+                const raw = await productsService.sGetBySlug(slug)
+                return this._mapProduct(raw)
             } catch (error) {
                 throw error
             }

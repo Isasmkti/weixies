@@ -6,7 +6,9 @@ export const useCartStore = defineStore('cart', {
         cart: null,
         items: [],
         loading: false,
-        error: null
+        error: null,
+        // Using an object for better reactivity and serialization compatibility
+        addingProducts: {} 
     }),
     actions: {
         async stGetCart(profileId) {
@@ -23,14 +25,28 @@ export const useCartStore = defineStore('cart', {
                 this.loading = false
             }
         },
+
         async stAddToCart(profileId, productId) {
             if (!profileId) return
+            
+            // 1. Trace the specific product being added
+            if (this.addingProducts[productId]) return; 
+            
+            // 2. OPTIMISTIC UPDATE
+            this.addingProducts[productId] = true;
+
             try {
                 this.loading = true
-                this.items = await cartService.sAddToCart(profileId, productId)
+                const newItems = await cartService.sAddToCart(profileId, productId)
+                
+                // 3. SECURE UPDATE
+                this.items = newItems;
             } catch (err) {
                 this.error = err.message
+                console.error('Add to Cart failed:', err)
+                throw err
             } finally {
+                delete this.addingProducts[productId];
                 this.loading = false
             }
         },

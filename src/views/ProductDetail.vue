@@ -250,7 +250,10 @@ const {
 
 // reactive check
 const isInCart = (productId) => {
-    return (cartStore?.items ?? []).some((item) => item.product_id === productId);
+    if (!productId) return false;
+    const inList = (cartStore?.items ?? []).some((item) => item.product_id === productId);
+    const isAdding = cartStore?.addingProducts?.[productId];
+    return inList || isAdding;
 };
 </script>
 

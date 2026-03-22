@@ -80,12 +80,7 @@ export function useProductDetailUI(initialSlug) {
         throw new Error('The product could not be found.')
       }
 
-      // Flatten categories
-      const categories = (foundProduct.product_categories || [])
-        .map(pc => pc.categories)
-        .filter(Boolean);
-
-      product.value = { ...foundProduct, categories }
+      product.value = foundProduct
       
       // Also fetch random products
       await fetchRandomProducts()
