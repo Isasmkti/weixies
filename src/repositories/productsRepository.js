@@ -5,26 +5,41 @@ export async function rAll(
     limit = 10,
     sortBy = 'created_at',
     sortOrder = 'desc',
-    search = ''
+    search = '',
+    categorySlug = ''
 ) {
     try {
         const from = (page - 1) * limit
         const to = from + limit - 1
 
-        // ✅ 1. buat query dulu
+        let select = '*, product_images(*)'
+        
+        // Joining through the product_categories pivot table
+        if (categorySlug && categorySlug.trim() !== '') {
+            select += ', product_categories!inner(category_id, categories!inner(*))'
+        } else {
+            select += ', product_categories(category_id, categories(*))'
+        }
+
+        // 1. Initialize query
         let query = supabase
             .from('products')
-            .select('*, product_images(*)', { count: 'exact' })
+            .select(select, { count: 'exact' })
             .order(sortBy, { ascending: sortOrder === 'asc' })
 
-        // ✅ 2. apply search SEBELUM dieksekusi
+        // 2. Apply search
         if (search && search.trim() !== '') {
             query = query.or(
                 `name.ilike.%${search}%,description.ilike.%${search}%`
             )
         }
 
-        // ✅ 3. baru eksekusi query
+        // 3. Apply category filter through the pivot relationship
+        if (categorySlug && categorySlug.trim() !== '') {
+            query = query.eq('product_categories.categories.slug', categorySlug)
+        }
+
+        // 4. Execute query with pagination
         const { data, error, count } = await query.range(from, to)
 
         if (error) throw error
@@ -48,7 +63,7 @@ export async function rGetById(id) {
     try {
         const { data, error } = await supabase
             .from('products')
-            .select('*, product_images(*)')
+            .select('*, product_images(*), product_categories(category_id, categories(*))')
             .eq('id', id)
             .single()
 
@@ -66,7 +81,7 @@ export async function rGetBySlug(slug) {
     try {
         const { data, error } = await supabase
             .from('products')
-            .select('*, product_images(*)')
+            .select('*, product_images(*), product_categories(category_id, categories(*))')
             .eq('slug', slug)
             .single()
 
@@ -145,12 +160,16 @@ function normalizeImages(images) {
     return result;
 }
 
-export async function sCreate(product, images) {
+export async function sCreate(product, images, categoryIds = []) {
     try {
         const newProduct = await rCreate(product)
 
         if (images?.length) {
             await rUpsertImages(newProduct.id, normalizeImages(images))
+        }
+
+        if (categoryIds?.length) {
+            await rUpsertProductCategories(newProduct.id, categoryIds)
         }
 
         return await rGetById(newProduct.id)
@@ -160,12 +179,16 @@ export async function sCreate(product, images) {
     }
 }
 
-export async function sUpdate(id, product, images) {
+export async function sUpdate(id, product, images, categoryIds = []) {
     try {
         await rUpdate(id, product)
 
         if (images) {
             await rUpsertImages(id, normalizeImages(images))
+        }
+
+        if (categoryIds) {
+            await rUpsertProductCategories(id, categoryIds)
         }
 
         return await rGetById(id)
@@ -249,6 +272,52 @@ export async function rUpsertImages(productId, images) {
         }
     } catch (err) {
         console.error('rUpsertImages error:', err)
+        throw err
+    }
+}
+
+export async function rUpsertProductCategories(productId, categoryIds) {
+    try {
+        // 1. Get existing categories for this product
+        const { data: existing, error: fetchError } = await supabase
+            .from('product_categories')
+            .select('category_id')
+            .eq('product_id', productId)
+
+        if (fetchError) throw fetchError
+
+        const existingCategoryIds = existing.map(i => i.category_id)
+
+        // 2. Identify categories to add and remove
+        const toAdd = categoryIds.filter(id => !existingCategoryIds.includes(id))
+        const toRemove = existingCategoryIds.filter(id => !categoryIds.includes(id))
+
+        // 3. REMOVE deselected categories
+        if (toRemove.length > 0) {
+            const { error } = await supabase
+                .from('product_categories')
+                .delete()
+                .eq('product_id', productId)
+                .in('category_id', toRemove)
+
+            if (error) throw error
+        }
+
+        // 4. ADD new categories
+        if (toAdd.length > 0) {
+            const { error } = await supabase
+                .from('product_categories')
+                .insert(
+                    toAdd.map(categoryId => ({
+                        product_id: productId,
+                        category_id: categoryId
+                    }))
+                )
+
+            if (error) throw error
+        }
+    } catch (err) {
+        console.error('rUpsertProductCategories error:', err)
         throw err
     }
 }

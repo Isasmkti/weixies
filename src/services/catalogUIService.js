@@ -1,17 +1,22 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { useProductsStore } from '../stores/productsStore'
 import { useCartStore } from '../stores/cartStore'
+import { useCategoriesStore } from '../stores/categoriesStore'
 import { getUser } from '../services/authService'
 import { useRouter } from 'vue-router'
+import { formatIDR } from '../utils/currency'
 
 export function useCatalogUI() {
   const router = useRouter()
   const productsStore = useProductsStore()
   const cartStore = useCartStore()
+  const categoriesStore = useCategoriesStore()
 
   const products = computed(() => productsStore.products)
-  const loading = computed(() => productsStore.loading)
-  const error = computed(() => productsStore.error)
+  const categories = computed(() => categoriesStore.categories)
+  const selectedCategory = computed(() => productsStore.categorySlug)
+  const loading = computed(() => productsStore.loading || categoriesStore.loading)
+  const error = computed(() => productsStore.error || categoriesStore.error)
 
   const addingToCart = ref(null)
   const searchInput = ref('')
@@ -25,12 +30,19 @@ export function useCatalogUI() {
   })
 
   onMounted(async () => {
-    await productsStore.stAll()
+    await Promise.all([
+      productsStore.stAll(),
+      categoriesStore.fetchCategories()
+    ])
   })
 
   const onSortChange = (e) => {
     const [by, order] = e.target.value.split('-')
     productsStore.changeSort({ by, order })
+  }
+
+  const setCategory = (slug) => {
+    productsStore.setCategory(slug)
   }
 
   const addToCart = async (productId) => {
@@ -61,14 +73,18 @@ export function useCatalogUI() {
 
   return {
     products,
+    categories,
+    selectedCategory,
     loading,
     error,
     searchInput,
     addingToCart,
     onSortChange,
+    setCategory,
     addToCart,
     getMainImage,
     productsStore,
-    cartStore
+    cartStore,
+    formatIDR
   }
 }

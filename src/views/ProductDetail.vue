@@ -77,7 +77,12 @@
                                     class="text-3xl md:text-4xl font-extrabold text-text-main tracking-tight leading-tight">
                                     {{ product.name }}
                                 </h1>
-
+                                <div class="flex flex-wrap gap-2 pt-1">
+                                    <span v-for="cat in product.categories" :key="cat.id"
+                                        class="rounded-full bg-primary/10 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary shadow-sm ring-1 ring-primary/20">
+                                        {{ cat.name }}
+                                    </span>
+                                </div>
                             </div>
 
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -93,16 +98,31 @@
                             </div>
 
                             <div class="flex flex-wrap gap-3 pt-2">
-                                <button @click="addToCart" :disabled="addingToCart"
-                                    class="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-white shadow-lg shadow-primary/30 transition-all duration-300 hover:bg-primary-dark hover:shadow-primary/40 disabled:cursor-not-allowed disabled:opacity-70">
-                                    <span v-if="addingToCart"
+                                <button 
+                                    @click="isInCart(product.id) ? router.push('/cart') : addToCart()" 
+                                    :disabled="addingToCart === product.id || (addingToCart && !product.id)"
+                                    :class="[
+                                        'inline-flex items-center gap-2 rounded-xl px-6 py-3 font-semibold text-white shadow-lg transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-70',
+                                        isInCart(product.id)
+                                            ? 'bg-emerald-500 hover:bg-emerald-600 shadow-emerald-500/30'
+                                            : 'bg-primary hover:bg-primary-dark shadow-primary/30 hover:shadow-primary/40'
+                                    ]">
+                                    <span v-if="addingToCart === product.id || (addingToCart && !product.id)"
                                         class="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white"></span>
-                                    <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                    
+                                    <svg v-else-if="!isInCart(product.id)" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                                     </svg>
-                                    {{ addingToCart ? 'Adding...' : 'Add to Cart' }}
+
+                                    <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    
+                                    {{ (addingToCart === product.id || (addingToCart && !product.id)) ? 'Adding...' : isInCart(product.id) ? 'Go to Cart' : 'Add to Cart' }}
                                 </button>
 
                                 <router-link to="/products"
@@ -166,16 +186,28 @@
                                 </p>
                                 <div class="flex justify-between items-center mt-auto pt-4 border-t border-bg-alt">
                                     <span class="text-xl font-extrabold text-text-main">
-                                        {{ rp.price ? `$${Number(rp.price).toFixed(2)}` : '$0.00' }}
+                                        {{ formatIDR(rp.price) }}
                                     </span>
-                                    <button @click.stop="addToCart(rp.id)" :disabled="addingToCart === rp.id"
-                                        class="p-2.5 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <button 
+                                        @click.stop="isInCart(rp.id) ? router.push('/cart') : addToCart(rp.id)" 
+                                        :disabled="addingToCart === rp.id"
+                                        :class="[
+                                            'p-2.5 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed',
+                                            isInCart(rp.id)
+                                                ? 'bg-emerald-500 text-white hover:bg-emerald-600'
+                                                : 'bg-primary/10 text-primary hover:bg-primary hover:text-white'
+                                        ]">
                                         <span v-if="addingToCart === rp.id"
                                             class="h-5 w-5 animate-spin rounded-full border-2 border-primary/40 border-t-primary"></span>
-                                        <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        <svg v-else-if="!isInCart(rp.id)" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                        </svg>
+                                        <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 13l4 4L19 7" />
                                         </svg>
                                     </button>
                                 </div>
@@ -211,8 +243,15 @@ const {
     addToCart,
     productImages,
     selectedImage,
-    randomProducts
+    randomProducts,
+    cartStore,
+    formatIDR
 } = useProductDetailUI(props.slug)
+
+// reactive check
+const isInCart = (productId) => {
+    return (cartStore?.items ?? []).some((item) => item.product_id === productId);
+};
 </script>
 
 <style scoped>

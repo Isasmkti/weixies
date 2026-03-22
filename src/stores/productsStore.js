@@ -27,6 +27,7 @@ export const useProductsStore = defineStore('products', {
         sortBy: 'created_at',
         sortOrder: 'desc',
         search: '',
+        categorySlug: '',
         requestId: 0,
         loading: false,
         error: null
@@ -39,6 +40,42 @@ export const useProductsStore = defineStore('products', {
 
     actions: {
 
+
+        _mapProduct(product) {
+            if (!product) return null;
+
+            let main = null;
+            if (product?.product_images && product.product_images.length > 0) {
+                const primary = product.product_images.find(img => img.is_primary);
+                if (primary && primary.image_url) main = primary.image_url;
+                else if (product.product_images[0]?.image_url) main = product.product_images[0].image_url;
+            } else if (product?.image_url) {
+                main = product.image_url;
+            }
+
+            // Reconstruct categories from the product_categories join table
+            // to match the requested relational structure (p.id, p.name, c.id, c.name).
+            const categories = (product.product_categories || [])
+                .map(pc => {
+                    if (!pc.categories) return null;
+                    return {
+                        category_id: pc.categories.id,
+                        category_name: pc.categories.name,
+                        ...pc.categories // keep original properties like name, slug
+                    };
+                })
+                .filter(Boolean);
+
+            return {
+                ...product,
+                // Explicitly alias to match the SQL query's preferred names
+                product_id: product.id,
+                product_name: product.name,
+                image_url: main,
+                main_image: main,
+                categories
+            };
+        },
 
         async stAll(page) {
             const targetPage = Number.isFinite(page) && page > 0 ? page : this.page
@@ -53,27 +90,16 @@ export const useProductsStore = defineStore('products', {
                         this.limit,
                         this.sortBy,
                         this.sortOrder,
-                        this.search
+                        this.search,
+                        this.categorySlug
                     )
                 )
 
                 if (current !== this.requestId) return
 
                 const rawData = Array.isArray(res?.data) ? res.data : []
-                console.log('[productsStore.stAll] Fetched raw catalog data:', rawData)
+                this.products = rawData.map(p => this._mapProduct(p))
                 
-                this.products = rawData.map(product => {
-                    let main = null;
-                    if (product?.product_images && product.product_images.length > 0) {
-                        const primary = product.product_images.find(img => img.is_primary);
-                        if (primary && primary.image_url) main = primary.image_url;
-                        else if (product.product_images[0]?.image_url) main = product.product_images[0].image_url;
-                    } else if (product?.image_url) {
-                        main = product.image_url;
-                    }
-                    console.log(`[productsStore.stAll] Evaluated main_image for ${product.id}:`, main)
-                    return { ...product, image_url: main, main_image: main };
-                })
                 this.total = Number(res?.total) || 0
                 this.page = targetPage
             } catch (err) {
@@ -81,7 +107,6 @@ export const useProductsStore = defineStore('products', {
                     this.error = err.message || 'Failed to load products'
                 }
             } finally {
-                // ⚠️ hanya request TERAKHIR yang boleh matiin loading
                 if (current === this.requestId) {
                     this.loading = false
                 }
@@ -90,6 +115,12 @@ export const useProductsStore = defineStore('products', {
 
         setSearch(val) {
             this.search = val
+            this.page = 1
+            this.stAll(1)
+        },
+
+        setCategory(slug) {
+            this.categorySlug = slug
             this.page = 1
             this.stAll(1)
         },
@@ -112,9 +143,10 @@ export const useProductsStore = defineStore('products', {
         async createProduct(payload) {
             this.loading = true
             try {
-                const { images, ...productData } = payload
-                const newProduct = await productsService.sCreate(productData, images)
-                this.products.unshift(newProduct) // Add to list if needed, or just let caller handle refresh
+                const { images, categoryIds, ...productData } = payload
+                const rawProduct = await productsService.sCreate(productData, images, categoryIds)
+                const newProduct = this._mapProduct(rawProduct)
+                this.products.unshift(newProduct)
                 return newProduct
             } catch (error) {
                 this.error = error.message
@@ -127,8 +159,9 @@ export const useProductsStore = defineStore('products', {
         async updateProduct(id, payload) {
             this.loading = true
             try {
-                const { images, ...productData } = payload
-                const updated = await productsService.sUpdate(id, productData, images)
+                const { images, categoryIds, ...productData } = payload
+                const rawUpdated = await productsService.sUpdate(id, productData, images, categoryIds)
+                const updated = this._mapProduct(rawUpdated)
                 const index = this.products.findIndex(p => p.id === id)
                 if (index !== -1) {
                     this.products[index] = updated

@@ -27,6 +27,7 @@
                             <tr class="bg-bg-alt/50 text-text-muted text-sm uppercase tracking-wider">
                                 <th class="p-6 font-semibold">Product</th>
                                 <th class="p-6 font-semibold">Price</th>
+                                <th class="p-6 font-semibold">Categories</th>
                                 <th class="p-6 font-semibold">Stock</th>
                                 <th class="p-6 font-semibold text-right">Actions</th>
                             </tr>
@@ -60,7 +61,16 @@
                                     </div>
                                 </td>
                                 <td class="p-6 font-mono font-medium text-text-main">
-                                    ${{ product.price }}
+                                    {{ formatIDR(product.price) }}
+                                </td>
+                                <td class="p-6">
+                                    <div class="flex flex-wrap gap-1 max-w-[200px]">
+                                        <span v-for="cat in product.categories" :key="cat.id"
+                                            class="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase whitespace-nowrap">
+                                            {{ cat.name }}
+                                        </span>
+                                        <span v-if="!product.categories?.length" class="text-[10px] text-text-muted italic">Untagged</span>
+                                    </div>
                                 </td>
                                 <td class="p-6 text-text-muted">
                                     {{ product.stock || '-' }}
@@ -111,6 +121,7 @@
 import { onMounted, computed } from 'vue'
 import DashboardLayout from '../../components/layouts/DashboardLayout.vue'
 import { useProductsStore } from '../../stores/productsStore'
+import { formatIDR } from '../../utils/currency'
 
 const productsStore = useProductsStore()
 

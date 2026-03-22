@@ -36,6 +36,34 @@
         </svg>
       </div>
 
+      <!-- category filter -->
+      <div v-if="categories.length > 0" class="flex flex-wrap gap-2 mb-10">
+        <button
+          @click="setCategory('')"
+          :class="[
+            'px-6 py-2.5 rounded-xl font-semibold transition-all duration-300',
+            !selectedCategory
+              ? 'bg-primary text-white shadow-lg shadow-primary/30'
+              : 'bg-surface text-text-muted hover:bg-primary/10 hover:text-primary border border-bg-alt/50 hover:border-primary/30'
+          ]"
+        >
+          All Items
+        </button>
+        <button
+          v-for="cat in categories"
+          :key="cat.id"
+          @click="setCategory(cat.slug)"
+          :class="[
+            'px-6 py-2.5 rounded-xl font-semibold transition-all duration-300',
+            selectedCategory === cat.slug
+              ? 'bg-primary text-white shadow-lg shadow-primary/30'
+              : 'bg-surface text-text-muted hover:bg-primary/10 hover:text-primary border border-bg-alt/50 hover:border-primary/30'
+          ]"
+        >
+          {{ cat.name }}
+        </button>
+      </div>
+
       <!-- sort by -->
       <div class="flex items-center gap-3 mb-10">
         <span class="text-sm text-text-muted font-semibold">Sort by:</span>
@@ -158,10 +186,22 @@
           <!-- Content -->
           <div class="p-6 flex flex-col flex-grow">
             <h3
-              class="text-lg font-bold text-text-main mb-2 line-clamp-1 group-hover:text-primary transition-colors font-poppins"
+              class="text-lg font-bold text-text-main mb-1 line-clamp-1 group-hover:text-primary transition-colors font-poppins"
             >
               {{ product.name }}
             </h3>
+            <div class="flex flex-wrap gap-1 mb-2">
+              <span 
+                v-for="cat in product.categories" 
+                :key="cat.id" 
+                class="text-[10px] uppercase tracking-wider font-extrabold text-primary bg-primary/10 px-2 py-0.5 rounded-md"
+              >
+                {{ cat.name }}
+              </span>
+              <span v-if="!product.categories?.length" class="text-[10px] text-text-muted italic">
+                Uncategorized
+              </span>
+            </div>
             <p
               class="text-text-muted text-sm mb-4 line-clamp-2 flex-grow font-montserrat"
             >
@@ -177,7 +217,7 @@
                   >Price</span
                 >
                 <span class="text-xl font-extrabold text-text-main font-poppins"
-                  >${{ product.price || "0.00" }}</span
+                  >{{ formatIDR(product.price) }}</span
                 >
               </div>
 
@@ -329,15 +369,19 @@ import router from "../router/index";
 
 const {
   products,
+  categories,
+  selectedCategory,
   loading,
   error,
   searchInput,
   addingToCart,
   onSortChange,
+  setCategory,
   addToCart,
   getMainImage,
   productsStore,
   cartStore,
+  formatIDR
 } = useCatalogUI();
 
 // reactive check

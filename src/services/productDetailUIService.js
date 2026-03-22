@@ -3,6 +3,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useProductsStore } from '../stores/productsStore'
 import { useCartStore } from '../stores/cartStore'
 import { getUser } from '../services/authService'
+import { formatIDR } from '../utils/currency'
 
 export function useProductDetailUI(initialSlug) {
   const router = useRouter()
@@ -40,12 +41,7 @@ export function useProductDetailUI(initialSlug) {
   }, { immediate: true })
 
   const formattedPrice = computed(() => {
-    const amount = Number(product.value?.price ?? 0)
-    if (!Number.isFinite(amount)) return '$0.00'
-    return amount.toLocaleString('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    })
+    return formatIDR(product.value?.price)
   })
 
   const randomProducts = ref([])
@@ -83,7 +79,13 @@ export function useProductDetailUI(initialSlug) {
       if (!foundProduct) {
         throw new Error('The product could not be found.')
       }
-      product.value = foundProduct
+
+      // Flatten categories
+      const categories = (foundProduct.product_categories || [])
+        .map(pc => pc.categories)
+        .filter(Boolean);
+
+      product.value = { ...foundProduct, categories }
       
       // Also fetch random products
       await fetchRandomProducts()
@@ -126,6 +128,8 @@ export function useProductDetailUI(initialSlug) {
     addToCart,
     productImages,
     selectedImage,
-    randomProducts
+    randomProducts,
+    cartStore,
+    formatIDR
   }
 }

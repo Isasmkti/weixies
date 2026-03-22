@@ -44,10 +44,27 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Price -->
                         <div>
-                            <label class="block text-sm font-semibold text-text-main mb-2">Price ($)</label>
-                            <input v-model.number="form.price" type="number" step="0.01" min="0" required
+                            <label class="block text-sm font-semibold text-text-main mb-2">Price (Rp)</label>
+                            <input v-model.number="form.price" type="number" step="1" min="0" required
                                 class="w-full rounded-xl border border-bg-alt bg-bg px-4 py-3 focus:ring-2 focus:ring-primary/30 outline-none transition-all"
-                                placeholder="0.00">
+                                placeholder="0">
+                        </div>
+                    </div>
+
+                    <!-- Categories -->
+                    <div>
+                        <label class="block text-sm font-semibold text-text-main mb-4">Categories</label>
+                        <div v-if="categoriesStore.loading" class="text-text-muted text-sm italic">Loading categories...</div>
+                        <div v-else class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <label v-for="cat in categories" :key="cat.id" 
+                                class="flex items-center gap-3 p-3 rounded-xl border border-bg-alt hover:border-primary/30 cursor-pointer transition-all bg-bg/50">
+                                <input type="checkbox" :value="cat.id" v-model="form.categoryIds"
+                                    class="h-5 w-5 rounded border-bg-alt text-primary focus:ring-primary/30">
+                                <span class="text-sm font-medium text-text-main">{{ cat.name }}</span>
+                            </label>
+                        </div>
+                        <div v-if="!categoriesStore.loading && categories.length === 0" class="text-text-muted text-sm border-2 border-dashed border-bg-alt rounded-xl p-4 text-center">
+                            No categories defined in database.
                         </div>
                     </div>
 
@@ -122,21 +139,27 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import DashboardLayout from '../../components/layouts/DashboardLayout.vue'
 import { useProductsStore } from '../../stores/productsStore'
+import { useCategoriesStore } from '../../stores/categoriesStore'
 import { sGetById } from '../../services/productsService'
 
 const route = useRoute()
 const router = useRouter()
 const productsStore = useProductsStore()
+const categoriesStore = useCategoriesStore()
 
 const isEditMode = computed(() => !!route.params.id)
 const loading = ref(false)
 const error = ref(null)
 
+const categories = computed(() => categoriesStore.categories)
+
 const form = ref({
     name: '',
     description: '',
     price: 0,
-    images: [] // Array of { image_url: string, is_primary: boolean }
+    slug: '',
+    images: [], // Array of { image_url: string, is_primary: boolean }
+    categoryIds: [] // Array of category UUIDs
 })
 
 const addImageUrl = () => {
@@ -158,6 +181,9 @@ const setMainImage = (index) => {
 }
 
 onMounted(async () => {
+    // Always load categories
+    categoriesStore.fetchCategories()
+
     if (isEditMode.value) {
         loading.value = true
         try {
@@ -168,7 +194,8 @@ onMounted(async () => {
                     description: product.description,
                     price: product.price,
                     slug: product.slug,
-                    images: product.product_images ? [...product.product_images].sort((a,b) => (b.is_primary ? 1 : 0) - (a.is_primary ? 1 : 0)) : []
+                    images: product.product_images ? [...product.product_images].sort((a,b) => (b.is_primary ? 1 : 0) - (a.is_primary ? 1 : 0)) : [],
+                    categoryIds: product.product_categories ? product.product_categories.map(pc => pc.category_id) : []
                 }
             }
         } catch (err) {

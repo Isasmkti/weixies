@@ -81,7 +81,7 @@
                             </h3>
                             <p class="text-sm text-text-muted font-montserrat line-clamp-1 mb-2">{{
                                 item.product?.description }}</p>
-                            <p class="text-lg font-bold text-primary font-poppins">${{ item.product?.price }}</p>
+                            <p class="text-lg font-bold text-primary font-poppins">{{ formatIDR(item.product?.price) }}</p>
                         </div>
 
                         <!-- Actions -->
@@ -105,16 +105,15 @@
                         <div class="space-y-4 mb-6">
                             <div class="flex justify-between items-center text-text-muted font-montserrat">
                                 <span>Subtotal</span>
-                                <span>${{ total.toFixed(2) }}</span>
+                                <span>{{ formatIDR(total) }}</span>
                             </div>
                             <div class="flex justify-between items-center text-text-muted font-montserrat">
                                 <span>Tax</span>
-                                <span>$0.00</span>
+                                <span>{{ formatIDR(0) }}</span>
                             </div>
                             <div class="border-t border-bg-alt pt-4 flex justify-between items-end">
                                 <span class="font-bold text-text-main">Total</span>
-                                <span class="text-3xl font-extrabold text-primary font-poppins">${{ total.toFixed(2)
-                                }}</span>
+                                <span class="text-3xl font-extrabold text-primary font-poppins">{{ formatIDR(total) }}</span>
                             </div>
                         </div>
 
@@ -151,6 +150,7 @@ import DashboardLayout from '../components/layouts/DashboardLayout.vue'
 import { useCartStore } from '../stores/cartStore'
 import { getUser } from '../services/authService'
 import { useRouter } from 'vue-router'
+import { formatIDR } from '../utils/currency'
 import Swal from 'sweetalert2'
 
 const router = useRouter()
