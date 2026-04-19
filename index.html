@@ -19,7 +19,9 @@
         const dark = saved === 'dark' || (saved === 'system' && prefersDark)
         document.documentElement.classList.toggle('dark', dark)
         document.documentElement.style.colorScheme = dark ? 'dark' : 'light'
-      } catch (_) {}
+      } catch (err) {
+        console.error('Error occurred while setting theme:', err)
+      }
     })()
   </script>
   <title>weixies-webshop</title>

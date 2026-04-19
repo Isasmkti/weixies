@@ -128,3 +128,5 @@ export function useProductDetailUI(initialSlug) {
     formatIDR
   }
 }
+
+

@@ -3,6 +3,8 @@ import { rGetCartWithCreation, rGetCartItems, rAddToCart, rRemoveFromCart } from
 function mapCartItemsImages(items) {
     if (!items) return items;
     return items.map(item => {
+
+        
         if (!item.product) return item;
         let main = null;
         if (item.product.product_images && item.product.product_images.length > 0) {
