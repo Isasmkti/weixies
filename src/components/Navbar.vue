@@ -1,8 +1,11 @@
 <template>
   <nav :class="[
-    'fixed top-0 left-0 w-full z-50 flex justify-between items-center transition-all duration-300',
-    isScrolled ? 'bg-surface/40 backdrop-blur-md shadow-md  py-4 px-8 text-text-main dark:text-white rounded-[40px] mt-10' : 'text-white bg-transparent py-12 px-12'
-  ]">
+  'fixed z-50 flex justify-between items-center transition-all duration-1000 ease-in-out rounded-[40px]',
+
+  isScrolled
+    ? 'top-5 left-1/2 -translate-x-1/2 w-[95%] max-w-6xl bg-surface/40 backdrop-blur-md shadow-md py-4 px-8 text-text-main dark:text-white '
+    : 'top-0 left-0 w-full bg-transparent py-12 px-12 text-white'
+]">
     <div class="text-xl font-bold ">
       Weixies
     </div>
