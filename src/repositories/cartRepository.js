@@ -6,15 +6,15 @@ export async function rGetCartWithCreation(profileId) {
             .from('cart')
             .select('*')
             .eq('profile_id', profileId)
-            .single()
+            .maybeSingle()
 
-        if (error) {
+        if (error || !data) {
             // If cart not found, create it
             const { data: newCart, error: createError } = await supabase
                 .from('cart')
                 .insert([{ profile_id: profileId }])
                 .select()
-                .single()
+                .maybeSingle()
 
             if (createError) throw createError
             return newCart
@@ -51,7 +51,7 @@ export async function rAddToCart(cartId, productId) {
             .from('cart_items')
             .insert([{ cart_id: cartId, product_id: productId }])
             .select()
-            .single()
+            .maybeSingle()
 
         if (error) throw error
         return data

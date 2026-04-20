@@ -30,10 +30,20 @@ export function useCatalogUI() {
   })
 
   onMounted(async () => {
-    await Promise.all([
+    const user = await getUser()
+    const promises = [
       productsStore.stAll(),
       categoriesStore.fetchCategories()
-    ])
+    ]
+    
+    // Fetch cart data upfront if user is logged in
+    if (user) {
+      // Avoid parallel fetch blocking UI unnecessarily, but we can do it 
+      // in Promise.all for simplicity.
+      promises.push(cartStore.stGetCart(user.id))
+    }
+    
+    await Promise.all(promises)
   })
 
   const onSortChange = (e) => {

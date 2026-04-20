@@ -76,12 +76,14 @@
 
                         <!-- Details -->
                         <div @click="router.push(`/products/${item.product?.slug}`)" class="flex-grow cursor-pointer">
-                            <h3 class="text-lg font-bold text-text-main font-poppins mb-1 group-hover:text-primary transition-colors">
+                            <h3
+                                class="text-lg font-bold text-text-main font-poppins mb-1 group-hover:text-primary transition-colors">
                                 {{ item.product?.name }}
                             </h3>
                             <p class="text-sm text-text-muted font-montserrat line-clamp-1 mb-2">{{
                                 item.product?.description }}</p>
-                            <p class="text-lg font-bold text-primary font-poppins">{{ formatIDR(item.product?.price) }}</p>
+                            <p class="text-lg font-bold text-primary font-poppins">{{ formatIDR(item.product?.price) }}
+                            </p>
                         </div>
 
                         <!-- Actions -->
@@ -113,7 +115,8 @@
                             </div>
                             <div class="border-t border-bg-alt pt-4 flex justify-between items-end">
                                 <span class="font-bold text-text-main">Total</span>
-                                <span class="text-3xl font-extrabold text-primary font-poppins">{{ formatIDR(total) }}</span>
+                                <span class="text-3xl font-extrabold text-primary font-poppins">{{ formatIDR(total)
+                                    }}</span>
                             </div>
                         </div>
 
@@ -177,7 +180,7 @@ onMounted(async () => {
 
 const removeFromCart = async (itemId) => {
     const result = await Swal.fire({
-          title: 'Are you sure?',
+        title: 'Are you sure?',
         text: "You won't be able to revert this!",
         icon: 'warning',
         background: 'rgb(var(--color-surface))',

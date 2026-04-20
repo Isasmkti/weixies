@@ -84,6 +84,12 @@ export function useProductDetailUI(initialSlug) {
       
       // Also fetch random products
       await fetchRandomProducts()
+
+      // Fetch cart if not already loaded and user is authenticated
+      const user = await getUser()
+      if (user && cartStore.items.length === 0) {
+        await cartStore.stGetCart(user.id)
+      }
     } catch (err) {
       product.value = null
       error.value = err.message || 'Failed to load this product.'

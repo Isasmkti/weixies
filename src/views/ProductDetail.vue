@@ -98,10 +98,8 @@
                             </div>
 
                             <div class="flex flex-wrap gap-3 pt-2">
-                                <button 
-                                    @click="isInCart(product.id) ? router.push('/cart') : addToCart()" 
-                                    :disabled="addingToCart === product.id || (addingToCart && !product.id)"
-                                    :class="[
+                                <button @click="isInCart(product.id) ? router.push('/cart') : addToCart()"
+                                    :disabled="addingToCart === product.id || (addingToCart && !product.id)" :class="[
                                         'inline-flex items-center gap-2 rounded-xl px-6 py-3 font-semibold text-white shadow-lg transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-70',
                                         isInCart(product.id)
                                             ? 'bg-emerald-500 hover:bg-emerald-600 shadow-emerald-500/30'
@@ -109,9 +107,9 @@
                                     ]">
                                     <span v-if="addingToCart === product.id || (addingToCart && !product.id)"
                                         class="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white"></span>
-                                    
-                                    <svg v-else-if="!isInCart(product.id)" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
+
+                                    <svg v-else-if="!isInCart(product.id)" xmlns="http://www.w3.org/2000/svg"
+                                        class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                                     </svg>
@@ -121,8 +119,9 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M5 13l4 4L19 7" />
                                     </svg>
-                                    
-                                    {{ (addingToCart === product.id || (addingToCart && !product.id)) ? 'Adding...' : isInCart(product.id) ? 'Go to Cart' : 'Add to Cart' }}
+
+                                    {{ (addingToCart === product.id || (addingToCart && !product.id)) ? 'Adding...' :
+                                        isInCart(product.id) ? 'Go to Cart' : 'Add to Cart' }}
                                 </button>
 
                                 <router-link to="/products"
@@ -135,7 +134,7 @@
                 </section>
 
 
-                
+
                 <section class="rounded-[2rem] border border-bg-alt/60 bg-surface p-6 md:p-10 shadow-lg">
                     <div class="max-w-3xl">
                         <h2 class="text-2xl md:text-3xl font-bold text-text-main mb-4">
@@ -188,10 +187,8 @@
                                     <span class="text-xl font-extrabold text-text-main">
                                         {{ formatIDR(rp.price) }}
                                     </span>
-                                    <button 
-                                        @click.stop="isInCart(rp.id) ? router.push('/cart') : addToCart(rp.id)" 
-                                        :disabled="addingToCart === rp.id"
-                                        :class="[
+                                    <button @click.stop="isInCart(rp.id) ? router.push('/cart') : addToCart(rp.id)"
+                                        :disabled="addingToCart === rp.id" :class="[
                                             'p-2.5 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed',
                                             isInCart(rp.id)
                                                 ? 'bg-emerald-500 text-white hover:bg-emerald-600'
@@ -199,8 +196,8 @@
                                         ]">
                                         <span v-if="addingToCart === rp.id"
                                             class="h-5 w-5 animate-spin rounded-full border-2 border-primary/40 border-t-primary"></span>
-                                        <svg v-else-if="!isInCart(rp.id)" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
+                                        <svg v-else-if="!isInCart(rp.id)" xmlns="http://www.w3.org/2000/svg"
+                                            class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                                         </svg>
