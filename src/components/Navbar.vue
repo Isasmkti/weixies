@@ -8,6 +8,12 @@
     </div>
 
     <div class="flex items-center space-x-6">
+      <template v-if="profile">
+        <router-link to="/dashboard"
+          class="bg-primary text-white px-4 py-2 rounded-xl shadow-lg hover:bg-primary-dark transition transform hover:-translate-y-0.5 font-medium">
+          Dashboard
+        </router-link>
+      </template>
 
       <template v-if="!profile">
         <router-link to="/login" class=" hover:text-primary transition font-medium">
@@ -19,15 +25,6 @@
           Sign Up
         </router-link>
       </template>
-
-      <template v-else>
-        <router-link to="/dashboard"
-          class="bg-primary text-white px-4 py-2 rounded-xl shadow-lg hover:bg-primary-dark transition transform hover:-translate-y-0.5 font-medium">
-          Dashboard
-        </router-link>
-      </template>
-
-
 
     </div>
   </nav>

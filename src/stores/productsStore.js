@@ -66,6 +66,12 @@ export const useProductsStore = defineStore('products', {
                 })
                 .filter(Boolean);
 
+            const reviews = product.reviews || [];
+            const reviewCount = reviews.length;
+            const averageRating = reviewCount > 0
+                ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviewCount
+                : 0;
+
             return {
                 ...product,
                 // Explicitly alias to match the SQL query's preferred names
@@ -73,7 +79,10 @@ export const useProductsStore = defineStore('products', {
                 product_name: product.name,
                 image_url: main,
                 main_image: main,
-                categories
+                categories,
+                reviews,
+                reviewCount,
+                averageRating
             };
         },
 

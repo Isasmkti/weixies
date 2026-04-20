@@ -12,7 +12,7 @@ export async function rAll(
         const from = (page - 1) * limit
         const to = from + limit - 1
 
-        let select = '*, product_images(*)'
+        let select = '*, product_images(*), reviews(*)'
         
         // Joining through the product_categories pivot table
         if (categorySlug && categorySlug.trim() !== '') {
@@ -63,7 +63,7 @@ export async function rGetById(id) {
     try {
         const { data, error } = await supabase
             .from('products')
-            .select('*, product_images(*), product_categories(category_id, categories(*))')
+            .select('*, product_images(*), product_categories(category_id, categories(*)), reviews(*)')
             .eq('id', id)
             .single()
 
@@ -81,7 +81,7 @@ export async function rGetBySlug(slug) {
     try {
         const { data, error } = await supabase
             .from('products')
-            .select('*, product_images(*), product_categories(category_id, categories(*))')
+            .select('*, product_images(*), product_categories(category_id, categories(*)), reviews(*)')
             .eq('slug', slug)
             .single()
 
