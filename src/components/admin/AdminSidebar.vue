@@ -15,6 +15,24 @@ const handleLogout = async () => {
     await signOut()
     router.push('/')
 }
+
+const menuItems = [
+    {
+        name: 'Dashboard',
+        to: '/admin',
+        icon: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z'
+    },
+    {
+        name: 'Products',
+        to: '/admin/products',
+        icon: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4'
+    },
+    {
+        name: 'Back to Shop',
+        to: '/',
+        icon: 'M10 19l-7-7m0 0l7-7m-7 7h18'
+    }
+]
 </script>
 
 <template>
@@ -35,46 +53,15 @@ const handleLogout = async () => {
 
         <!-- Navigation -->
         <nav class="flex-1 px-4 space-y-2 overflow-y-auto container no-scrollbar">
-            <!-- Dashboard -->
-            <router-link to="/admin"
-                class="flex items-center gap-3 px-4 py-3 rounded-xl text-text-muted hover:bg-bg hover:text-primary transition-all duration-200 group"
-                active-class="bg-primary/10 text-primary font-medium shadow-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                </svg>
-                <transition name="fade">
-                    <span v-if="!isCollapsed">Dashboard</span>
-                </transition>
-            </router-link>
-
-            <!-- Products -->
-            <router-link to="/admin/products"
+            <router-link v-for="(item, index) in menuItems" :key="index" :to="item.to"
                 :class="['flex items-center gap-3 px-4 py-3 rounded-xl text-text-muted hover:bg-bg hover:text-primary transition-all duration-200 group', isCollapsed ? 'justify-center' : '']"
                 active-class="bg-primary/10 text-primary font-medium shadow-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="item.icon" />
                 </svg>
                 <transition name="fade">
-                    <span v-if="!isCollapsed">Products</span>
-                </transition>
-            </router-link>
-
-          
-
-            <!-- Back to Shop -->
-            <router-link to="/"
-                :class="['flex items-center gap-3 px-4 py-3 rounded-xl text-text-muted hover:bg-bg hover:text-primary transition-all duration-200 group', isCollapsed ? 'justify-center' : '']">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                <transition name="fade">
-                    <span v-if="!isCollapsed">Back to Shop</span>
+                    <span v-if="!isCollapsed">{{ item.name }}</span>
                 </transition>
             </router-link>
         </nav>
