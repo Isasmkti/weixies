@@ -26,10 +26,10 @@
                         </svg>
                         Back to Catalog
                     </router-link>
-                    <span
+                    <!-- <span
                         class="rounded-full border border-primary/15 bg-primary/5 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary">
                         {{ product.slug ? `#${product.slug}` : '#product' }}
-                    </span>
+                    </span> -->
                 </div>
 
                 <section

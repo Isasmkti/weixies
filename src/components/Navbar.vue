@@ -6,8 +6,9 @@
     ? 'top-5 left-1/2 -translate-x-1/2 w-[95%] max-w-6xl bg-surface/40 backdrop-blur-md shadow-md py-4 px-8 text-text-main dark:text-white '
     : 'top-0 left-0 w-full bg-transparent py-12 px-12 text-white'
 ]">
-    <div class="text-xl font-bold ">
-      Weixies
+    <div class="flex items-center gap-2">
+      <img src="../assets/weixies-logo.svg" alt="Weixies Logo" class="w-8 h-8 object-contain" />
+      <span class="text-xl font-bold">Weixies</span>
     </div>
 
     <div class="flex items-center space-x-6">

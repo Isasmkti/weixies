@@ -51,9 +51,8 @@ const menuItems = [
 
         <!-- Header / Branding -->
         <div class="p-6 flex items-center gap-4">
-            <div
-                class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/30 shrink-0">
-                W
+            <div class="w-10 h-10 shrink-0 flex items-center justify-center">
+                <img src="../assets/weixies-logo.svg" alt="Weixies Logo" class="w-full h-full object-contain drop-shadow-md" />
             </div>
             <transition name="fade">
                 <span v-if="!isCollapsed"

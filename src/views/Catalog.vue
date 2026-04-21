@@ -111,21 +111,23 @@
               class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             </div>
 
-            <div
+            <div v-if="isNewProduct(product.created_at || product.createdAt)"
               class="absolute top-4 left-4 bg-surface/90 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-bold text-text-main shadow-sm">
               New
             </div>
 
             <!-- Wishlist Button -->
-            <button @click.stop="toggleWishlist(product.id)"
-              :class="[
-                'absolute top-4 right-4 h-9 w-9 rounded-full flex items-center justify-center transition-all duration-300 shadow-sm z-10 hover:scale-110',
-                wishlistStore.isWishlisted(product.id) 
-                  ? 'bg-red-500 text-white shadow-red-500/30' 
-                  : 'bg-surface/90 backdrop-blur-sm text-text-muted hover:text-red-500 hover:bg-surface'
-              ]">
-              <svg xmlns="http://www.w3.org/2000/svg" :fill="wishlistStore.isWishlisted(product.id) ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" class="h-5 w-5">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            <button @click.stop="toggleWishlist(product.id)" :class="[
+              'absolute top-4 right-4 h-9 w-9 rounded-full flex items-center justify-center transition-all duration-300 shadow-sm z-10 hover:scale-110',
+              wishlistStore.isWishlisted(product.id)
+                ? 'bg-red-500 text-white shadow-red-500/30'
+                : 'bg-surface/90 backdrop-blur-sm text-text-muted hover:text-red-500 hover:bg-surface'
+            ]">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                :fill="wishlistStore.isWishlisted(product.id) ? 'currentColor' : 'none'" viewBox="0 0 24 24"
+                stroke="currentColor" class="h-5 w-5">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
             </button>
           </div>
@@ -149,16 +151,22 @@
             <!-- Review Stars -->
             <div class="flex items-center gap-1 mb-3" v-if="product.reviewCount > 0">
               <div class="flex text-yellow-500">
-                <svg v-for="i in 5" :key="i" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" :class="i <= Math.round(product.averageRating) ? 'fill-current' : 'text-gray-300 dark:text-gray-600'" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                <svg v-for="i in 5" :key="i" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                  :class="i <= Math.round(product.averageRating) ? 'fill-current' : 'text-gray-300 dark:text-gray-600'"
+                  viewBox="0 0 20 20" fill="currentColor">
+                  <path
+                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
               </div>
-              <span class="text-xs text-text-muted font-semibold ml-1">{{ product.averageRating.toFixed(1) }} ({{ product.reviewCount }})</span>
+              <span class="text-xs text-text-muted font-semibold ml-1">{{ product.averageRating.toFixed(1) }} ({{
+                product.reviewCount }})</span>
             </div>
             <div class="flex items-center gap-1 mb-3 text-text-muted text-xs font-semibold" v-else>
               <div class="flex text-gray-300 dark:text-gray-600">
-                <svg v-for="i in 5" :key="i" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                <svg v-for="i in 5" :key="i" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20"
+                  fill="currentColor">
+                  <path
+                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
               </div>
               <span class="ml-1">No reviews</span>
@@ -178,11 +186,11 @@
                   ? router.push('/cart')
                   : addToCart(product.id)
                 " :disabled="addingToCart === product.id" :class="[
-    'relative overflow-hidden px-5 py-2.5 rounded-xl transition-all duration-300 shadow-md active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed',
-    isInCart(product.id)
-      ? 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/30'
-      : 'bg-primary hover:bg-primary-dark text-white shadow-primary/25 hover:shadow-primary/40'
-  ]">
+                  'relative overflow-hidden px-5 py-2.5 rounded-xl transition-all duration-300 shadow-md active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed',
+                  isInCart(product.id)
+                    ? 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/30'
+                    : 'bg-primary hover:bg-primary-dark text-white shadow-primary/25 hover:shadow-primary/40'
+                ]">
                 <span class="flex items-center gap-2 font-medium">
 
                   <!-- Loading -->
@@ -206,8 +214,8 @@
                     addingToCart === product.id
                       ? "Adding..."
                       : isInCart(product.id)
-                  ? "Go to Cart"
-                  : "Add"
+                        ? "Go to Cart"
+                        : "Add"
                   }}
                 </span>
               </button>
@@ -266,19 +274,19 @@ const wishlistStore = useWishlistStore();
 const profileId = ref(null);
 
 onMounted(async () => {
-    const user = await getUser();
-    if (user) {
-        profileId.value = user.id;
-        await wishlistStore.stGetWishlists(user.id);
-    }
+  const user = await getUser();
+  if (user) {
+    profileId.value = user.id;
+    await wishlistStore.stGetWishlists(user.id);
+  }
 });
 
 const toggleWishlist = async (productId) => {
-    if (!profileId.value) {
-        router.push('/login');
-        return;
-    }
-    await wishlistStore.stToggleWishlist(profileId.value, productId);
+  if (!profileId.value) {
+    router.push('/login');
+    return;
+  }
+  await wishlistStore.stToggleWishlist(profileId.value, productId);
 };
 
 const {
@@ -297,6 +305,15 @@ const {
   cartStore,
   formatIDR
 } = useCatalogUI();
+
+const isNewProduct = (createdAt) => {
+  if (!createdAt) return false;
+  const createdDate = new Date(createdAt);
+  const now = new Date();
+  const diffTime = Math.abs(now - createdDate);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+  return diffDays <= 3; // within the last 3 days
+};
 
 // reactive check
 const isInCart = (productId) => {
