@@ -47,10 +47,23 @@
                             <!-- Main Large Image -->
                             <div class="rounded-3xl border border-bg-alt bg-bg-alt/50 p-4">
                                 <div
-                                    class="aspect-square w-full overflow-hidden rounded-2xl bg-bg flex items-center justify-center">
+                                    class="relative aspect-square w-full overflow-hidden rounded-2xl bg-bg flex items-center justify-center">
                                     <img v-if="selectedImage" :src="selectedImage" :alt="product.name"
                                         class="h-full w-full object-cover transition-all duration-300">
                                     <defaultProduct v-else class="h-40 w-40 text-text-muted/60" />
+                                    
+                                    <!-- Wishlist Button -->
+                                    <button @click.stop="toggleWishlist(product.id)"
+                                      :class="[
+                                        'absolute top-4 right-4 h-11 w-11 rounded-full flex items-center justify-center transition-all duration-300 shadow-md z-10 hover:scale-110',
+                                        wishlistStore.isWishlisted(product.id) 
+                                          ? 'bg-red-500 text-white shadow-red-500/30' 
+                                          : 'bg-surface/90 backdrop-blur-sm text-text-muted hover:text-red-500 hover:bg-surface'
+                                      ]">
+                                      <svg xmlns="http://www.w3.org/2000/svg" :fill="wishlistStore.isWishlisted(product.id) ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                      </svg>
+                                    </button>
                                 </div>
                             </div>
 
@@ -192,6 +205,19 @@
                                 <div
                                     class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                 </div>
+                                
+                                <!-- Wishlist Button for suggested product -->
+                                <button @click.stop="toggleWishlist(rp.id)"
+                                  :class="[
+                                    'absolute top-4 right-4 h-9 w-9 rounded-full flex items-center justify-center transition-all duration-300 shadow-sm z-10 hover:scale-110',
+                                    wishlistStore.isWishlisted(rp.id) 
+                                      ? 'bg-red-500 text-white shadow-red-500/30' 
+                                      : 'bg-surface/90 backdrop-blur-sm text-text-muted hover:text-red-500 hover:bg-surface'
+                                  ]">
+                                  <svg xmlns="http://www.w3.org/2000/svg" :fill="wishlistStore.isWishlisted(rp.id) ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" class="h-5 w-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                  </svg>
+                                </button>
                             </div>
                             <div class="p-5 flex flex-col flex-grow">
                                 <h3
@@ -254,6 +280,13 @@
 </template>
 
 <script setup>
+import { computed, onMounted, ref } from 'vue'
+import defaultProduct from '../components/defaultProduct.vue'
+import { useProductDetailUI } from '../services/productDetailUIService'
+import DashboardLayout from '../components/layouts/DashboardLayout.vue'
+import router from '../router/index';
+import { useWishlistStore } from "../stores/wishlistStore";
+import { getUser } from "../services/authService";
 
 const props = defineProps({
     slug: {
@@ -262,10 +295,24 @@ const props = defineProps({
     }
 })
 
-import defaultProduct from '../components/defaultProduct.vue'
-import { useProductDetailUI } from '../services/productDetailUIService'
-import DashboardLayout from '../components/layouts/DashboardLayout.vue'
-import router from '../router/index';
+const wishlistStore = useWishlistStore();
+const profileId = ref(null);
+
+onMounted(async () => {
+    const user = await getUser();
+    if (user) {
+        profileId.value = user.id;
+        await wishlistStore.stGetWishlists(user.id);
+    }
+});
+
+const toggleWishlist = async (productId) => {
+    if (!profileId.value) {
+        router.push('/login');
+        return;
+    }
+    await wishlistStore.stToggleWishlist(profileId.value, productId);
+};
 
 const {
     product,

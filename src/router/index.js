@@ -32,6 +32,12 @@ const routes = [
   },
 
   {
+    path: "/wishlist",
+    component: () => import("../views/Wishlist.vue"),
+    meta: { requiresAuth: true },
+  },
+
+  {
     path: "/dashboard",
     component: Dashboard,
     meta: { requiresAuth: true },

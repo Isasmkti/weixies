@@ -112,9 +112,22 @@
             </div>
 
             <div
-              class="absolute top-4 right-4 bg-surface/90 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-bold text-text-main shadow-sm">
+              class="absolute top-4 left-4 bg-surface/90 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-bold text-text-main shadow-sm">
               New
             </div>
+
+            <!-- Wishlist Button -->
+            <button @click.stop="toggleWishlist(product.id)"
+              :class="[
+                'absolute top-4 right-4 h-9 w-9 rounded-full flex items-center justify-center transition-all duration-300 shadow-sm z-10 hover:scale-110',
+                wishlistStore.isWishlisted(product.id) 
+                  ? 'bg-red-500 text-white shadow-red-500/30' 
+                  : 'bg-surface/90 backdrop-blur-sm text-text-muted hover:text-red-500 hover:bg-surface'
+              ]">
+              <svg xmlns="http://www.w3.org/2000/svg" :fill="wishlistStore.isWishlisted(product.id) ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor" class="h-5 w-5">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </button>
           </div>
 
           <!-- Content -->
@@ -241,11 +254,32 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, onMounted, ref } from "vue";
 import defaultProduct from "../components/defaultProduct.vue";
 import { useCatalogUI } from "../services/catalogUIService";
 import DashboardLayout from "../components/layouts/DashboardLayout.vue";
 import router from "../router/index";
+import { useWishlistStore } from "../stores/wishlistStore";
+import { getUser } from "../services/authService";
+
+const wishlistStore = useWishlistStore();
+const profileId = ref(null);
+
+onMounted(async () => {
+    const user = await getUser();
+    if (user) {
+        profileId.value = user.id;
+        await wishlistStore.stGetWishlists(user.id);
+    }
+});
+
+const toggleWishlist = async (productId) => {
+    if (!profileId.value) {
+        router.push('/login');
+        return;
+    }
+    await wishlistStore.stToggleWishlist(profileId.value, productId);
+};
 
 const {
   products,
