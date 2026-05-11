@@ -47,7 +47,7 @@ const menuItems = [
 
 <template>
     <aside
-        :class="['bg-surface shadow-[4px_0_24px_rgba(0,0,0,0.02)] h-screen flex flex-col transition-all duration-300 relative z-20 border-r border-bg-alt/50 ', isCollapsed ? 'w-20' : 'w-72']">
+        :class="['bg-surface shadow-[4px_0_24px_rgba(0,0,0,0.02)] h-screen hidden md:flex md:flex-col transition-all duration-300 relative z-20 border-r border-bg-alt/50 ', isCollapsed ? 'w-20' : 'w-72']">
 
         <!-- Header / Branding -->
         <div class="p-6 flex items-center gap-4">

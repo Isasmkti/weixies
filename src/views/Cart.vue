@@ -2,22 +2,8 @@
     <DashboardLayout>
         <div class="max-w-[1600px] mx-auto font-poppins">
             <!-- Header -->
-            <div
-                class="flex items-center gap-4 mb-10 hover:translate-x-1 transition-transform w-fit cursor-pointer group">
-                <router-link to="/products"
-                    class="flex items-center gap-2 text-text-muted hover:text-primary transition-colors">
-                    <div class="bg-surface p-2 rounded-full shadow-sm group-hover:shadow-md transition-shadow">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                        </svg>
-                    </div>
-                    <span class="font-medium">Back to Catalog</span>
-                </router-link>
-            </div>
 
-            <h1 class="text-4xl font-extrabold text-text-main mb-8 tracking-tight">Your Shopping Cart</h1>
+            <h1 class="text-4xl font-extrabold text-text-main mb-8 tracking-tight">Shopping Cart</h1>
 
             <!-- Loading State -->
             <div v-if="loading" class="flex flex-col items-center justify-center py-24">
@@ -59,12 +45,18 @@
             </div>
 
             <!-- Cart Items -->
-            <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
 
                 <!-- Items List -->
-                <div class="lg:col-span-2 space-y-6">
+                <div class="md:col-span-2 grid grid-cols-1 gap-8">
                     <div v-for="item in items" :key="item.id"
-                        class="bg-surface rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6 border border-bg-alt/50 group">
+                        class="bg-surface rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 p-4 sm:p-6 flex flex-row sm:flex-row items-start sm:items-center gap-4 sm:gap-6 border border-bg-alt/50 group">
+
+                        <!-- Checkbox -->
+                        <div class="flex items-center">
+                            <input type="checkbox" :value="item.id" v-model="selectedItems"
+                                class="w-5 h-5 rounded border-bg-alt text-primary focus:ring-primary/50 cursor-pointer accent-primary">
+                        </div>
 
                         <!-- Product Image -->
                         <div @click="router.push(`/products/${item.product?.slug}`)"
@@ -100,8 +92,8 @@
                 </div>
 
                 <!-- Order Summary -->
-                <div class="lg:col-span-1">
-                    <div class="bg-surface rounded-2xl shadow-lg border border-bg-alt/50 p-6 sm:p-8 sticky top-28">
+                <div class="md:col-span-1 md:relative ">
+                    <aside class="bg-surface rounded-2xl md:rounded-none shadow-lg md:shadow-[-4px_0_24px_rgba(0,0,0,0.02)] border border-bg-alt/50 md:border-y-0 md:border-r-0 md:border-l p-6 sm:p-8 sticky top-28 md:top-0 md:-mt-8 md:-mr-8 md:h-screen md:pt-12 md:flex md:flex-col z-10">
                         <h2 class="text-xl font-bold text-text-main mb-6 font-poppins">Order Summary</h2>
 
                         <div class="space-y-4 mb-6">
@@ -115,7 +107,7 @@
                             </div>
                             <div class="border-t border-bg-alt pt-4 flex justify-between items-end">
                                 <span class="font-bold text-text-main">Total</span>
-                                <span class="text-3xl font-extrabold text-primary font-poppins">{{ formatIDR(total)
+                                <span class="text-lg md:text-3xl font-extrabold text-primary font-poppins">{{ formatIDR(total)
                                     }}</span>
                             </div>
                         </div>
@@ -140,7 +132,7 @@
                             </svg>
                             <span>Secure Checkout</span>
                         </div>
-                    </div>
+                    </aside>
                 </div>
             </div>
         </div>
@@ -148,7 +140,7 @@
 </template>
 
 <script setup>
-import { onMounted, computed } from 'vue'
+import { onMounted, computed, ref } from 'vue'
 import DashboardLayout from '../components/layouts/DashboardLayout.vue'
 import { useCartStore } from '../stores/cartStore'
 import { getUser } from '../services/authService'
@@ -163,9 +155,14 @@ const items = computed(() => cartStore.items)
 const loading = computed(() => cartStore.loading)
 const error = computed(() => cartStore.error)
 
+const selectedItems = ref([])
+
 const total = computed(() => {
     return items.value.reduce((sum, item) => {
-        return sum + (Number(item.product?.price) || 0)
+        if (selectedItems.value.includes(item.id)) {
+            return sum + (Number(item.product?.price) || 0)
+        }
+        return sum
     }, 0)
 })
 

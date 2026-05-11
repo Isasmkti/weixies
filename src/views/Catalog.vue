@@ -1,55 +1,71 @@
 <template>
   <DashboardLayout>
     <div class="max-w-[1600px] mx-auto font-poppins">
-      <div class="flex justify-between items-end mb-10">
+
+   <!-- HEADER -->
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
         <div>
-          <h1 class="text-4xl font-extrabold text-text-main tracking-tight mb-2">
+          <h1 class="text-3xl md:text-4xl font-extrabold text-text-main mb-2">
             Product Catalog
           </h1>
-          <p class="text-text-muted font-montserrat">
+          <p class="text-sm text-text-muted">
             Discover our exclusive collection of premium items.
           </p>
         </div>
-      </div>
-      <!-- search -->
-      <div class="relative w-full sm:w-80 mb-10">
-        <input v-model="searchInput" type="text" placeholder="Search products..."
-          class="w-full rounded-xl border border-bg-alt bg-surface px-4 py-2.5 pr-10 text-text-main focus:ring-2 focus:ring-primary/30" />
 
-        <svg xmlns="http://www.w3.org/2000/svg"
-          class="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-text-muted" fill="none" viewBox="0 0 24 24"
-          stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M21 21l-4.35-4.35M16.65 11A5.65 5.65 0 1111 5.35a5.65 5.65 0 015.65 5.65z" />
-        </svg>
+        <!-- SEARCH -->
+        <div class="relative w-full md:w-80 lg:w-96">
+          <input
+            v-model="searchInput"
+            type="text"
+            placeholder="Search products..."
+            class="w-full rounded-xl border border-bg-alt bg-surface px-4 py-2.5 pr-10 text-text-main focus:ring-2 focus:ring-primary/30"
+          />
+          <svg xmlns="http://www.w3.org/2000/svg"
+            class="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-text-muted"
+            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-4.35-4.35M16.65 11A5.65 5.65 0 1111 5.35a5.65 5.65 0 015.65 5.65z" />
+          </svg>
+        </div>
       </div>
 
-      <!-- category filter -->
-      <div v-if="categories.length > 0" class="flex flex-wrap gap-2 mb-10">
-        <button @click="setCategory('')" :class="[
-          'px-6 py-2.5 rounded-xl font-semibold transition-all duration-300',
-          !selectedCategory
-            ? 'bg-primary text-white shadow-lg shadow-primary/30'
-            : 'bg-surface text-text-muted hover:bg-primary/10 hover:text-primary border border-bg-alt/50 hover:border-primary/30'
-        ]">
+      <!-- CATEGORY -->
+      <div v-if="categories.length"
+        class="flex flex-wrap gap-3 mb-8">
+        <button
+          @click="setCategory('')"
+          :class="[
+            'px-5 py-2.5 rounded-xl text-sm font-semibold transition',
+            !selectedCategory
+              ? 'bg-primary text-white shadow-md'
+              : 'bg-surface border border-bg-alt text-text-muted hover:bg-primary/10 hover:text-primary'
+          ]"
+        >
           All Items
         </button>
-        <button v-for="cat in categories" :key="cat.id" @click="setCategory(cat.slug)" :class="[
-          'px-6 py-2.5 rounded-xl font-semibold transition-all duration-300',
-          selectedCategory === cat.slug
-            ? 'bg-primary text-white shadow-lg shadow-primary/30'
-            : 'bg-surface text-text-muted hover:bg-primary/10 hover:text-primary border border-bg-alt/50 hover:border-primary/30'
-        ]">
+
+        <button
+          v-for="cat in categories"
+          :key="cat.id"
+          @click="setCategory(cat.slug)"
+          :class="[
+            'px-5 py-2.5 rounded-xl text-sm font-semibold transition',
+            selectedCategory === cat.slug
+              ? 'bg-primary text-white shadow-md'
+              : 'bg-surface border border-bg-alt text-text-muted hover:bg-primary/10 hover:text-primary'
+          ]"
+        >
           {{ cat.name }}
         </button>
       </div>
 
       <!-- sort by -->
-      <div class="flex items-center gap-3 mb-10">
+      <div class="flex flex-wrap items-center gap-3 mb-8 md:mb-10">
         <span class="text-sm text-text-muted font-semibold">Sort by:</span>
 
         <select @change="onSortChange"
-          class="bg-surface border border-bg-alt rounded-xl px-4 py-2 text-text-main font-semibold focus:ring-2 focus:ring-primary/30">
+          class="bg-surface border border-bg-alt rounded-xl px-3 md:px-4 py-2 text-sm md:text-base text-text-main font-semibold focus:ring-2 focus:ring-primary/30">
           <option value="created_at-desc">Newest</option>
           <option value="price-asc">Price: Low to High</option>
           <option value="price-desc">Price: High to Low</option>
@@ -95,7 +111,7 @@
         </button>
       </div>
 
-      <div v-else class="grid items-center grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
+      <div v-else class="grid items-center grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-10">
         <div v-for="product in products" :key="product.id" @click="router.push(`/products/${product.slug}`)"
           class="group bg-surface rounded-2xl shadow-lg shadow-black/5 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 border border-bg-alt overflow-hidden flex flex-col h-full">
           <!-- Image Container -->
@@ -133,9 +149,9 @@
           </div>
 
           <!-- Content -->
-          <div class="p-6 flex flex-col flex-grow">
+          <div class="p-4 md:p-6 flex flex-col flex-grow">
             <h3
-              class="text-lg font-bold text-text-main mb-1 line-clamp-1 group-hover:text-primary transition-colors font-poppins">
+              class="text-base md:text-lg font-bold text-text-main mb-1 line-clamp-1 group-hover:text-primary transition-colors font-poppins">
               {{ product.name }}
             </h3>
             <div class="flex flex-wrap gap-1 mb-2">
@@ -175,10 +191,11 @@
               {{ product.description }}
             </p>
 
-            <div class="flex justify-between items-center mt-auto pt-4 border-t border-bg-alt">
+            <div class="flex flex-wrap justify-between items-center mt-auto pt-4 border-t border-bg-alt gap-2">
               <div class="flex flex-col">
                 <span class="text-xs text-text-muted uppercase tracking-wider font-semibold">Price</span>
-                <span class="text-xl font-extrabold text-text-main font-poppins">{{ formatIDR(product.price) }}</span>
+                <span class="text-lg md:text-xl font-extrabold text-text-main font-poppins">{{ formatIDR(product.price)
+                  }}</span>
               </div>
 
               <button @click.stop="
@@ -186,27 +203,27 @@
                   ? router.push('/cart')
                   : addToCart(product.id)
                 " :disabled="addingToCart === product.id" :class="[
-                  'relative overflow-hidden px-5 py-2.5 rounded-xl transition-all duration-300 shadow-md active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed',
+                  'relative overflow-hidden px-3 py-2 md:px-5 md:py-2.5 rounded-xl transition-all duration-300 shadow-md active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed',
                   isInCart(product.id)
                     ? 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/30'
                     : 'bg-primary hover:bg-primary-dark text-white shadow-primary/25 hover:shadow-primary/40'
                 ]">
-                <span class="flex items-center gap-2 font-medium">
+                <span class="flex items-center gap-1.5 md:gap-2 text-sm md:text-base font-medium">
 
                   <!-- Loading -->
                   <span v-if="addingToCart === product.id"
-                    class="animate-spin h-4 w-4 border-2 border-white/30 border-t-white rounded-full"></span>
+                    class="animate-spin h-3.5 w-3.5 md:h-4 md:w-4 border-2 border-white/30 border-t-white rounded-full"></span>
 
                   <!-- Dynamic Icon -->
-                  <svg v-else-if="!isInCart(product.id)" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
+                  <svg v-else-if="!isInCart(product.id)" xmlns="http://www.w3.org/2000/svg"
+                    class="h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                   </svg>
 
                   <!-- Check Icon -->
-                  <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
+                  <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                   </svg>
 
@@ -226,18 +243,20 @@
       </div>
     </div>
     <!-- Pagination -->
-    <div v-if="products.length > 0" class="flex justify-center items-center gap-6 mt-16 font-poppins">
+    <div v-if="products.length > 0"
+      class="flex flex-wrap justify-center items-center gap-4 md:gap-6 mt-12 md:mt-16 font-poppins">
       <!-- Prev -->
       <button :disabled="productsStore.page === 1" @click="productsStore.stAll(productsStore.page - 1)"
-        class="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold bg-surface border border-bg-alt text-text-main hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-surface disabled:hover:text-text-main">
+        class="flex items-center gap-1.5 md:gap-2 px-4 py-2 md:px-5 md:py-2.5 text-sm md:text-base rounded-xl font-semibold bg-surface border border-bg-alt text-text-main hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-surface disabled:hover:text-text-main">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
         </svg>
-        Prev
+        <span class="hidden sm:inline">Prev</span>
       </button>
 
       <!-- Page Info -->
-      <div class="px-6 py-2 rounded-xl bg-bg-alt text-text-muted font-semibold tracking-wide">
+      <div
+        class="px-4 py-2 md:px-6 rounded-xl bg-bg-alt text-text-muted text-sm md:text-base font-semibold tracking-wide">
         Page
         <span class="text-text-main font-extrabold">
           {{ productsStore.page }}
@@ -251,8 +270,8 @@
       <!-- Next -->
       <button :disabled="productsStore.page === productsStore.totalPages"
         @click="productsStore.stAll(productsStore.page + 1)"
-        class="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold bg-primary text-white shadow-md shadow-primary/30 hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/40 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-primary">
-        Next
+        class="flex items-center gap-1.5 md:gap-2 px-4 py-2 md:px-5 md:py-2.5 text-sm md:text-base rounded-xl font-semibold bg-primary text-white shadow-md shadow-primary/30 hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/40 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-primary">
+        <span class="hidden sm:inline">Next</span>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
@@ -311,7 +330,7 @@ const isNewProduct = (createdAt) => {
   const createdDate = new Date(createdAt);
   const now = new Date();
   const diffTime = Math.abs(now - createdDate);
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   return diffDays <= 3; // within the last 3 days
 };
 
